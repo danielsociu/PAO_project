@@ -1,24 +1,27 @@
-package Models;
+package models;
 
 import java.util.Date;
 
 public class Absence {
     Student student;
     Subject subject;
+    Teacher teacher;
     Date date;
     boolean motivated;
 
-    public Absence(Student student, Subject subject, Date date) {
+    public Absence(Student student, Subject subject, Date date, Teacher teacher) {
         this.student = student;
         this.subject = subject;
         this.date = date;
         this.motivated = false;
+        this.teacher = teacher;
     }
 
-    public Absence(Student student, Subject subject, Date date, boolean motivated) {
+    public Absence(Student student, Subject subject, Date date, Teacher teacher, boolean motivated) {
         this.student = student;
         this.subject = subject;
         this.date = date;
+        this.teacher = teacher;
         this.motivated = motivated;
     }
 
@@ -52,5 +55,13 @@ public class Absence {
 
     public void setMotivated(boolean motivated) {
         this.motivated = motivated;
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
     }
 }

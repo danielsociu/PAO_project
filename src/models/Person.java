@@ -1,4 +1,4 @@
-package Models;
+package models;
 
 import java.util.Date;
 
@@ -37,5 +37,10 @@ public class Person {
     }
     public void setPid(String pid) {
         this.pid = pid;
+    }
+
+    @Override
+    public String toString() {
+        return firstName + ' ' + lastName;
     }
 }

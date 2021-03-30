@@ -1,4 +1,4 @@
-package Models;
+package models;
 
 public class Subject {
     private String name;
@@ -19,5 +19,10 @@ public class Subject {
     }
     public void setDomain(String domain) {
         this.domain = domain;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }
