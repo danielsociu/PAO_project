@@ -4,12 +4,24 @@ import helpers.Pair;
 import models.*;
 import models.Class;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 
 public class ClassService {
 
     public void addGrade(Class schoolClass, Grade grade) {
         schoolClass.getCatalogue().getGrades().add(grade);
+
+        // Here we make sure the grades from catalogue are sorted
+        Collections.sort(schoolClass.getCatalogue().getGrades(), new Comparator<Grade>() {
+            @Override
+            public int compare(Grade g1, Grade g2) {
+                if (g1.getScore() < g2.getScore()) return -1;
+                if (g1.getScore() > g2.getScore()) return 1;
+                return 0;
+            }
+        });
 
         String message = "Grade " + grade +
                 " has been added to class " + schoolClass;
