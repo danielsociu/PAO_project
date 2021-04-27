@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class School {
+    private static School school = new School();
     private String name;
     private List<Class> classes;
     private School() {
@@ -27,14 +28,16 @@ public class School {
         this.classes = classes;
     }
 
+    public static School getSchool() {
+        return school;
+    }
+
     @Override
     public String toString() {
         return "School: " + name;
     }
 
     public static class Builder {
-        private School school = new School();
-
         public Builder withName(String name) {
             school.setName(name);
             return this;
@@ -48,10 +51,10 @@ public class School {
         //     return this;
         // }
         public School build() {
-            if (this.school.getClasses() == null) {
-                this.school.setClasses(new ArrayList<Class>());
+            if (school.getClasses() == null) {
+                school.setClasses(new ArrayList<Class>());
             }
-            return this.school;
+            return school;
         }
     }
 

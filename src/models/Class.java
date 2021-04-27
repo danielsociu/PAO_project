@@ -3,6 +3,7 @@ package models;
 import helpers.Pair;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Class {
@@ -12,7 +13,7 @@ public class Class {
     private Program program;
     private Catalogue catalogue;
     private List<Student> students;
-    private List<Pair<Subject, Teacher>> subjects;
+    private HashMap<Subject, Teacher> subjects;
 
     private Class () {}
 
@@ -64,11 +65,11 @@ public class Class {
         this.students = students;
     }
 
-    public List<Pair<Subject, Teacher>> getSubjects() {
+    public HashMap<Subject, Teacher> getSubjects() {
         return subjects;
     }
 
-    public void setSubjects(List<Pair<Subject, Teacher>> subjects) {
+    public void setSubjects(HashMap<Subject, Teacher> subjects) {
         this.subjects = subjects;
     }
 
@@ -104,13 +105,13 @@ public class Class {
             schoolClass.setStudents(students);
             return this;
         }
-        public Class.Builder withSubjects(List<Pair<Subject, Teacher>> subjects) {
+        public Class.Builder withSubjects(HashMap<Subject, Teacher> subjects) {
             schoolClass.setSubjects(subjects);
             return this;
         }
         public Class build() {
             if (this.schoolClass.getSubjects() == null) {
-                this.schoolClass.setSubjects(new ArrayList<Pair<Subject, Teacher>>());
+                this.schoolClass.setSubjects(new HashMap<Subject, Teacher>());
             }
             if (this.schoolClass.getStudents() == null) {
                 this.schoolClass.setStudents(new ArrayList<Student>());

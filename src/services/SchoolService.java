@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 
 public class SchoolService {
-    //TODO: Add overwrite to toString() where needed
     private ClassService classService = new ClassService();
     public void addClass(School school, Class schoolClass) {
         school.getClasses().add(schoolClass);
@@ -16,7 +15,6 @@ public class SchoolService {
         System.out.println(message);
     }
 
-    //TODO: show treelike view of all data
     public void showSchool(School school) {
         System.out.println(school);
         System.out.println("Has classes:");

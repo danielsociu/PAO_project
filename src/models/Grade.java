@@ -1,23 +1,30 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 public class Grade {
-    double score;
-    Date date;
-    String evaluationMethod;
-    Student student;
-    Teacher teacher;
-    Subject subject;
+    private double score;
+    private Date date;
+    private String evaluationMethod;
+    private Student student;
+    private Teacher teacher;
+    private Subject subject;
 
-    public Grade(double score, Date date, String evaluationMethod, Student student, Teacher teacher, Subject subject) {
-        this.score = score;
-        this.date = date;
-        this.evaluationMethod = evaluationMethod;
-        this.student = student;
-        this.teacher = teacher;
-        this.subject = subject;
+    private Grade() {
+
     }
+
+    // public Grade(double score, Date date, String evaluationMethod, Student student, Teacher teacher, Subject subject) {
+    //     this.score = score;
+    //     this.date = date;
+    //     this.evaluationMethod = evaluationMethod;
+    //     this.student = student;
+    //     this.teacher = teacher;
+    //     this.subject = subject;
+    // }
 
     public double getScore() {
         return score;
@@ -67,6 +74,37 @@ public class Grade {
         this.subject = subject;
     }
 
+    public static class Builder {
+        private Grade grade = new Grade();
+
+        public Grade.Builder withScore(double score) {
+            grade.setScore(score);
+            return this;
+        }
+        public Grade.Builder withDate(Date date) {
+            grade.setDate(date);
+            return this;
+        }
+        public Grade.Builder withEvaluationMethod(String evaluationMethod) {
+            grade.setEvaluationMethod(evaluationMethod);
+            return this;
+        }
+        public Grade.Builder withStudent(Student student) {
+            grade.setStudent(student);
+            return this;
+        }
+        public Grade.Builder withTeacher(Teacher teacher) {
+            grade.setTeacher(teacher);
+            return this;
+        }
+        public Grade.Builder withSubject(Subject subject) {
+            grade.setSubject(subject);
+            return this;
+        }
+        public Grade build() {
+            return this.grade;
+        }
+    }
     @Override
     public String toString() {
         return "Grade " + score + " at " + subject + " by "
