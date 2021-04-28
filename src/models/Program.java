@@ -21,4 +21,9 @@ public class Program {
     public void setNumberYears(int numberYears) {
         this.numberYears = numberYears;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

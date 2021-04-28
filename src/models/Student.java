@@ -15,4 +15,8 @@ public class Student extends Person {
     public void setStudentClass(Class studentClass) {
         this.studentClass = studentClass;
     }
+    @Override
+    public String toString() {
+        return super.toString() + super.getPid();
+    }
 }

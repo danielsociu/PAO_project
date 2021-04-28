@@ -6,8 +6,6 @@ import services.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
 import java.util.Scanner;
 
 
@@ -15,8 +13,8 @@ public class Application {
     public static void main(String[] args) {
 
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
-        SchoolService schoolService = new SchoolService();
-        ClassService classService = new ClassService();
+        SchoolService schoolService =  SchoolService.getSchoolService();
+        ClassService classService = ClassService.getClassService();
         School school = new School.Builder()
                 .withName("Base School")
                 .build();
@@ -34,19 +32,21 @@ public class Application {
 
         Scanner commandInput = new Scanner(System.in);
         while (true) {
+            String year, letter, target;
+            Class myClass;
             System.out.println("Enter where do you want to make a change: catalogue, class, school; or exit");
             String place = commandInput.nextLine();
+            System.out.println("What action do you want to do: add, edit, delete, show");
+            String action = commandInput.nextLine();
             switch (place) {
                 case "catalogue":
                     System.out.println("Enter the class current year:");
-                    String year = commandInput.nextLine();
+                    year = commandInput.nextLine();
                     System.out.println("Enter the class letter:");
-                    String letter = commandInput.nextLine();
-                    Class myClass = classService.getCurrentClass(year, letter);
-                    System.out.println("What action do you want to do: add, edit, delete, show");
-                    String action = commandInput.nextLine();
+                    letter = commandInput.nextLine();
+                    myClass = classService.getCurrentClass(year, letter);
                     System.out.println(action + " a mark or absence?");
-                    String target = commandInput.nextLine();
+                    target = commandInput.nextLine();
                     if (target.equals("mark")) {
                         switch (action) {
                             case "add":
@@ -56,7 +56,7 @@ public class Application {
                                 classService.showGrades(myClass);
                                 break;
                             case "edit":
-                                classService.changeGradeInteractive(commandInput, myClass, "update");
+                                classService.changeGradeInteractive(commandInput, myClass, "edit");
                                 break;
                             case "delete":
                                 classService.changeGradeInteractive(commandInput, myClass, "delete");
@@ -71,7 +71,7 @@ public class Application {
                                 classService.showAbsences(myClass);
                                 break;
                             case "edit":
-                                classService.changeAbsenceInteractive(commandInput, myClass, "update");
+                                classService.changeAbsenceInteractive(commandInput, myClass, "edit");
                                 break;
                             case "delete":
                                 classService.changeAbsenceInteractive(commandInput, myClass, "delete");
@@ -80,13 +80,51 @@ public class Application {
                     }
                     break;
                 case "class":
-
+                    if (action.equals("add")) {
+                        schoolService.addClassInteractive(commandInput);
+                        break;
+                    }
+                    System.out.println("Enter the class current year:");
+                    year = commandInput.nextLine();
+                    System.out.println("Enter the class letter:");
+                    letter = commandInput.nextLine();
+                    myClass = classService.getCurrentClass(year, letter);
+                    switch (action) {
+                        case "show":
+                            classService.showClass(myClass);
+                            break;
+                        case "edit":
+                            classService.editClassInteractive(commandInput, myClass);
+                            break;
+                        case "delete":
+                            school.getClasses().remove(myClass);
+                            break;
+                    }
                     break;
+                case "school":
+                    switch (action) {
+                        case "show":
+                            schoolService.showSchool();
+                            break;
+                        case "edit":
+                            schoolService.editSchoolInteractive(commandInput);
+                            break;
+                        case "delete":
+                            schoolService.deleteSchoolInteractive(commandInput);
+                            break;
+                        case "add":
+                            try {
+                                schoolService.addSchoolInteractive(commandInput);
+                            } catch (ParseException e) {
+                                System.out.println("Wrong date");
+                            }
+                            break;
+                    }
             }
             break;
         }
 
-        schoolService.showSchool(school);
+        schoolService.showSchool();
         Class workingClass = school.getClasses().get(0);
         try {
             classService.addStudent(
@@ -119,20 +157,7 @@ public class Application {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        // TODO: Change grade constructor to builder constructor
-        // classService.addGrade(
-        //         workingClass,
-        //         new Grade(
-        //                 7.6,
-        //                 new Date(),
-        //                 "Test",
-        //                 workingClass.getStudents().get(0),
-        //                 workingClass.getSubjects().get(0), // Helper kkkPair
-        //                 workingClass.getSubjects().keySet().
-        //         )
-        // );
-
-        schoolService.showSchool(school);
+        schoolService.showSchool();
     }
 }
 

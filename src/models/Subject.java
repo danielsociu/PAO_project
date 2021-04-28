@@ -2,7 +2,7 @@ package models;
 
 public class Subject {
     private String name;
-    private String domain; // change to class!!
+    private String domain; 
 
     public Subject(String name, String domain) {
         this.name = name;

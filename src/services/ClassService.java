@@ -7,6 +7,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClassService {
+    private static ClassService classService = new ClassService();
+
+    private ClassService() { }
+
+    public static ClassService getClassService() {
+        return classService;
+    }
 
     public void addGrade(Class schoolClass, Grade grade) {
         schoolClass.getCatalogue().getGrades().add(grade);
@@ -31,6 +38,8 @@ public class ClassService {
     }
 
     public void addStudent(Class schoolClass, Student student) {
+        SchoolService schoolService = SchoolService.getSchoolService();
+        schoolService.addStudent(student);
         schoolClass.getStudents().add(student);
 
         String message = "Student " + student +
@@ -47,11 +56,86 @@ public class ClassService {
     }
 
     public void showGrades(Class schoolClass) {
-        schoolClass.getCatalogue().getGrades().forEach(System.out::println);
+        List<Grade> grades = schoolClass.getCatalogue().getGrades();
+        if (grades.size() > 0) {
+            schoolClass.getCatalogue().getGrades().forEach(System.out::println);
+        }
     }
 
     public void showAbsences(Class schoolClass) {
-        schoolClass.getCatalogue().getAbsences().forEach(System.out::println);
+        List<Absence> absences = schoolClass.getCatalogue().getAbsences();
+        if (absences.size() > 0) {
+            absences.forEach(System.out::println);
+        } 
+    }
+
+    public void showClass(Class schoolClass) {
+        System.out.println(schoolClass);
+    }
+
+    public void editClassInteractive(Scanner in, Class schoolClass) {
+        School school = School.getSchool();
+        System.out.println("You can edit one of the fields: year, yearPeriod, letter or add a program/student/subject");
+        String option = in.nextLine();
+        if ("year yearPeriod letter".contains(option)) {
+            System.out.println("Enter the " + option);
+            String choice = in.nextLine();
+            switch (option) {
+                case "year":
+                    schoolClass.setYear(choice);
+                    break;
+                case "yearPeriod":
+                    schoolClass.setYearPeriod(choice);
+                    break;
+                case "letter":
+                    schoolClass.setLetter(choice);
+                    break;
+            }
+        } else {
+            int position;
+            switch (option) {
+                case "program":
+                    List<Program> programs = school.getPrograms();
+                    printList(programs);
+                    System.out.println("Choose the program's number");
+                    position = Integer.parseInt(in.nextLine());
+                    schoolClass.setProgram(programs.get(position));
+                    break;
+                case "student":
+                    List<Student> students = school.getStudents();
+                    System.out.println("Enter the student's name:");
+                    String studentName = in.nextLine();
+                    List<Student> studentsNamed = students.stream()
+                            .filter(std -> (studentName.contains(std.getFirstName())
+                                        && studentName.contains(std.getLastName())))
+                            .collect(Collectors.toList());
+                    printList(students);
+                    System.out.println("Choose the student:");
+                    position = Integer.parseInt(in.nextLine());
+                    schoolClass.getStudents().add(studentsNamed.get(position));
+                    break;
+                case "subject":
+                    List<Subject> subjects = school.getSubjects();
+                    System.out.println("Enter the subject's name:");
+                    String subjectName = in.nextLine().toLowerCase();
+                    Subject mySubject = subjects.stream()
+                            .filter(sub -> subjectName.contains(sub.getName().toLowerCase()))
+                            .findFirst()
+                            .orElse(null);
+                    List<Teacher> teachers = school.getTeachers();
+                    System.out.println("Enter the teacher's name:");
+                    String teacherName = in.nextLine();
+                    List<Teacher> teachersNamed = teachers.stream()
+                            .filter(std -> (teacherName.contains(std.getFirstName())
+                                    && teacherName.contains(std.getLastName())))
+                            .collect(Collectors.toList());
+                    printList(teachers);
+                    System.out.println("Choose the teacher:");
+                    position = Integer.parseInt(in.nextLine());
+                    schoolClass.getSubjects().put(mySubject, teachersNamed.get(position));
+                    break;
+            }
+        }
     }
 
     public void addGradeInteractive(Scanner in, Class schoolClass) {
@@ -116,10 +200,8 @@ public class ClassService {
                         && grade.getTeacher().equals(finalTeacher)
                         && grade.getStudent().equals(student)))
                 .collect(Collectors.toList());
-        for (int i = 0; i < grades.size(); i++) {
-            System.out.println(i + ". " + grades.get(i).toString());
-        }
-        if (operation.toLowerCase() == "update") {
+        printList(grades);
+        if (operation.toLowerCase() == "edit") {
             System.out.println("Enter grade to be updated:");
             int updated = Integer.parseInt(in.nextLine());
             System.out.println("Enter new score:");
@@ -191,10 +273,8 @@ public class ClassService {
                         && grade.getTeacher().equals(finalTeacher)
                         && grade.getStudent().equals(student)))
                 .collect(Collectors.toList());
-        for (int i = 0; i < absences.size(); i++) {
-            System.out.println(i + ". " + absences.get(i).toString());
-        }
-        if (operation.toLowerCase() == "update") {
+        printList(absences);
+        if (operation.toLowerCase() == "edit") {
             System.out.println("Enter absence to be updated:");
             int updated = Integer.parseInt(in.nextLine());
             System.out.println("Enter new absence value:");
@@ -204,6 +284,12 @@ public class ClassService {
             System.out.println("Enter absence to be deleted:");
             int deleted = Integer.parseInt(in.nextLine());
             schoolClass.getCatalogue().getAbsences().remove(absences.get(deleted));
+        }
+    }
+
+    private <T> void printList(List<T> list) {
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println(i + ". " + list.get(i));
         }
     }
 }
