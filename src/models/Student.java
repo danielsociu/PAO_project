@@ -17,6 +17,6 @@ public class Student extends Person {
     }
     @Override
     public String toString() {
-        return super.toString() + super.getPid();
+        return super.toString() + " pid: " + super.getPid();
     }
 }

@@ -1,7 +1,5 @@
 package models;
 
-import helpers.Pair;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,19 +56,25 @@ public class Class {
     }
 
     public List<Student> getStudents() {
-        return students;
+        if (students == null) {
+            return null;
+        }
+        return new ArrayList<>(students);
     }
 
     public void setStudents(List<Student> students) {
-        this.students = students;
+        this.students = new ArrayList<>(students);
     }
 
     public HashMap<Subject, Teacher> getSubjects() {
-        return subjects;
+        if (subjects == null) {
+            return null;
+        }
+        return new HashMap<>(subjects);
     }
 
     public void setSubjects(HashMap<Subject, Teacher> subjects) {
-        this.subjects = subjects;
+        this.subjects = new HashMap<>(subjects);
     }
 
     @Override

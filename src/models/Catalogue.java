@@ -17,18 +17,18 @@ public class Catalogue {
     }
 
     public List<Grade> getGrades() {
-        return grades;
+        return new ArrayList<>(grades);
     }
 
     public void setGrades(List<Grade> grades) {
-        this.grades = grades;
+        this.grades = new ArrayList<>(grades);
     }
 
     public List<Absence> getAbsences() {
-        return absences;
+        return new ArrayList<>(absences);
     }
 
     public void setAbsences(List<Absence> absences) {
-        this.absences = absences;
+        this.absences = new ArrayList<>(absences);
     }
 }

@@ -6,6 +6,7 @@ import services.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -15,12 +16,11 @@ public class Application {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
         SchoolService schoolService =  SchoolService.getSchoolService();
         ClassService classService = ClassService.getClassService();
-        School school = new School.Builder()
-                .withName("Base School")
-                .build();
+        CatalogueService catalogueService = CatalogueService.getCatalogueService();
+        School school = School.getSchool(); // School is a singleton
+        school.setName("Base School");
 
         schoolService.addClass(
-                school,
                 new Class.Builder()
                 .withYear("11")
                 .withYearPeriod("2020-2021")
@@ -34,6 +34,7 @@ public class Application {
         while (true) {
             String year, letter, target;
             Class myClass;
+            System.out.println("NOTE: To add students/subjects you need to edit the class");
             System.out.println("Enter where do you want to make a change: catalogue, class, school; or exit");
             String place = commandInput.nextLine();
             System.out.println("What action do you want to do: add, edit, delete, show");
@@ -50,31 +51,31 @@ public class Application {
                     if (target.equals("mark")) {
                         switch (action) {
                             case "add":
-                                classService.addGradeInteractive(commandInput, myClass);
+                                catalogueService.addGradeInteractive(commandInput, myClass);
                                 break;
                             case "show":
-                                classService.showGrades(myClass);
+                                catalogueService.showGrades(myClass);
                                 break;
                             case "edit":
-                                classService.changeGradeInteractive(commandInput, myClass, "edit");
+                                catalogueService.changeGradeInteractive(commandInput, myClass, "edit");
                                 break;
                             case "delete":
-                                classService.changeGradeInteractive(commandInput, myClass, "delete");
+                                catalogueService.changeGradeInteractive(commandInput, myClass, "delete");
                                 break;
                         }
                     } else if (target.equals("absence")) {
                         switch (action) {
                             case "add":
-                                classService.addAbsenceInteractive(commandInput, myClass);
+                                catalogueService.addAbsenceInteractive(commandInput, myClass);
                                 break;
                             case "show":
-                                classService.showAbsences(myClass);
+                                catalogueService.showAbsences(myClass);
                                 break;
                             case "edit":
-                                classService.changeAbsenceInteractive(commandInput, myClass, "edit");
+                                catalogueService.changeAbsenceInteractive(commandInput, myClass, "edit");
                                 break;
                             case "delete":
-                                classService.changeAbsenceInteractive(commandInput, myClass, "delete");
+                                catalogueService.changeAbsenceInteractive(commandInput, myClass, "delete");
                                 break;
                         }
                     }
@@ -83,6 +84,15 @@ public class Application {
                     if (action.equals("add")) {
                         schoolService.addClassInteractive(commandInput);
                         break;
+                    }
+                    List<Class> classes = school.getClasses();
+                    if (classes.size() == 0) {
+                        System.out.println("You first need to add a class!");
+                        schoolService.addClassInteractive(commandInput);
+                        classes = school.getClasses();
+                    }
+                    for (Class cls: classes) {
+                        System.out.println(cls);
                     }
                     System.out.println("Enter the class current year:");
                     year = commandInput.nextLine();
@@ -97,7 +107,10 @@ public class Application {
                             classService.editClassInteractive(commandInput, myClass);
                             break;
                         case "delete":
-                            school.getClasses().remove(myClass);
+                            // Update to delete students/teachers from here and from school to delete a classs
+                            classes = school.getClasses();
+                            classes.remove(myClass);
+                            school.setClasses(classes);
                             break;
                     }
                     break;
@@ -113,11 +126,7 @@ public class Application {
                             schoolService.deleteSchoolInteractive(commandInput);
                             break;
                         case "add":
-                            try {
-                                schoolService.addSchoolInteractive(commandInput);
-                            } catch (ParseException e) {
-                                System.out.println("Wrong date");
-                            }
+                            schoolService.addSchoolInteractive(commandInput);
                             break;
                     }
             }
