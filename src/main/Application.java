@@ -107,10 +107,7 @@ public class Application {
                             classService.editClassInteractive(commandInput, myClass);
                             break;
                         case "delete":
-                            // Update to delete students/teachers from here and from school to delete a classs
-                            classes = school.getClasses();
-                            classes.remove(myClass);
-                            school.setClasses(classes);
+                            classService.deleteClassInteractive(commandInput, myClass);
                             break;
                     }
                     break;

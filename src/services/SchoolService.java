@@ -28,7 +28,7 @@ public class SchoolService {
         classes.add(schoolClass);
         school.setClasses(classes);
 
-        String message = "Class " + schoolClass.getYear() + '-' + schoolClass;
+        String message = "Class " + schoolClass + " has been been added";
         System.out.println(message);
     }
 
@@ -72,6 +72,8 @@ public class SchoolService {
         List<Class> classes = school.getClasses();
         Class deleted = classes.remove(position);
         school.setClasses(classes);
+        String message = "Class " + deleted + " has been been deleted";
+        System.out.println(message);
         return deleted;
     }
 
@@ -80,6 +82,8 @@ public class SchoolService {
         List<Student> students = school.getStudents();
         students.add(student);
         school.setStudents(students);
+        String message = "Student " + student + " has been been added";
+        System.out.println(message);
     }
 
     public Student removeStudent(int position) {
@@ -87,6 +91,8 @@ public class SchoolService {
         List<Student> students = school.getStudents();
         Student deleted = students.remove(position);
         school.setStudents(students);
+        String message = "Student " + deleted + " has been been deleted";
+        System.out.println(message);
         return deleted;
     }
 
@@ -95,6 +101,8 @@ public class SchoolService {
         List<Teacher> teachers = school.getTeachers();
         teachers.add(teacher);
         school.setTeachers(teachers);
+        String message = "Teacher " + teacher + " has been been added";
+        System.out.println(message);
     }
 
     public Teacher removeTeacher(int position) {
@@ -102,6 +110,8 @@ public class SchoolService {
         List<Teacher> teachers = school.getTeachers();
         Teacher deleted = teachers.remove(position);
         school.setTeachers(teachers);
+        String message = "Teacher " + deleted + " has been been deleted";
+        System.out.println(message);
         return deleted;
     }
 
@@ -110,6 +120,8 @@ public class SchoolService {
         List<Program> programs = school.getPrograms();
         programs.add(program);
         school.setPrograms(programs);
+        String message = "Program " + program + " has been been added";
+        System.out.println(message);
     }
 
     public Program removeProgram(int position) {
@@ -117,6 +129,8 @@ public class SchoolService {
         List<Program> programs = school.getPrograms();
         Program deleted = programs.remove(position);
         school.setPrograms(programs);
+        String message = "Program " + deleted + " has been been deleted";
+        System.out.println(message);
         return deleted;
     }
 
@@ -125,6 +139,8 @@ public class SchoolService {
         List<Subject> subjects = school.getSubjects();
         subjects.add(subject);
         school.setSubjects(subjects);
+        String message = "Subject " + subject + " has been been added";
+        System.out.println(message);
     }
 
     public Subject removeSubject(int position) {
@@ -132,6 +148,8 @@ public class SchoolService {
         List<Subject> subjects = school.getSubjects();
         Subject deleted = subjects.remove(position);
         school.setSubjects(subjects);
+        String message = "Subject " + deleted + " has been been deleted";
+        System.out.println(message);
         return deleted;
     }
 

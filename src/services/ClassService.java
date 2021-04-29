@@ -45,6 +45,17 @@ public class ClassService {
         System.out.println(message);
     }
 
+    public void removeStudent(Class schoolClass, Student student) {
+        List<Student> classStudents = schoolClass.getStudents();
+        classStudents.remove(student);
+
+        schoolClass.setStudents(classStudents);
+
+        String message = "Student " + student +
+                " has been removed from class " + schoolClass;
+        System.out.println(message);
+    }
+
     public void addSubject(Class schoolClass, Subject subject, Teacher teacher) {
         schoolClass.getSubjects().put(subject, teacher);
         Set<Class> teacherClasses = teacher.getClasses();
@@ -59,42 +70,65 @@ public class ClassService {
                 subject + " in class " + schoolClass;
         System.out.println(message);
     }
+    public void removeSubject(Class schoolClass, Subject subject) {
+        HashMap<Subject, Teacher> classSubjects = schoolClass.getSubjects();
+        classSubjects.remove(subject);
 
-    public void addStudentToClassInteractive(Scanner in, Class schoolClass) {
-        School school = School.getSchool();
-        List<Student> students = school.getStudents();
-        System.out.println("Enter the student's name:");
-        String studentName = in.nextLine();
-        List<Student> studentsNamed = students.stream()
-                .filter(std -> (studentName.contains(std.getFirstName())
-                        && studentName.contains(std.getLastName())))
-                .collect(Collectors.toList());
-        printList(studentsNamed);
-        System.out.println("Choose the student:");
-        int position = Integer.parseInt(in.nextLine());
-        addStudent(schoolClass, studentsNamed.get(position));
+        schoolClass.setSubjects(classSubjects);
+
+        String message = "Subject " + subject +
+                " has been removed from class " + schoolClass;
+        System.out.println(message);
     }
 
-    public void addSubjectToClassInteractive(Scanner in, Class schoolClass) {
+    public void editStudentInClassInteractive(Scanner in, Class schoolClass, String operation) {
+        School school = School.getSchool();
+        List<Student> students = school.getStudents();
+        printList(students);
+
+        // System.out.println("Enter the student's name:");
+        // String studentName = in.nextLine();
+        // List<Student> studentsNamed = students.stream()
+        //         .filter(std -> (studentName.contains(std.getFirstName())
+        //                 && studentName.contains(std.getLastName())))
+        //         .collect(Collectors.toList());
+        // printList(studentsNamed);
+
+        System.out.println("Choose the student:");
+        int position = Integer.parseInt(in.nextLine());
+        if (operation.equalsIgnoreCase("add")) {
+            addStudent(schoolClass, students.get(position));
+        } else if (operation.equalsIgnoreCase("delete")) {
+            removeStudent(schoolClass, students.get(position));
+        }
+    }
+
+    public void editSubjectInClassInteractive(Scanner in, Class schoolClass, String operation) {
         School school = School.getSchool();
         List<Subject> subjects = school.getSubjects();
+        printList(subjects);
         System.out.println("Enter the subject's name:");
         String subjectName = in.nextLine().toLowerCase();
         Subject mySubject = subjects.stream()
                 .filter(sub -> subjectName.contains(sub.getName().toLowerCase()))
                 .findFirst()
                 .orElse(null);
-        List<Teacher> teachers = school.getTeachers();
-        System.out.println("Enter the teacher's name:");
-        String teacherName = in.nextLine();
-        List<Teacher> teachersNamed = teachers.stream()
-                .filter(std -> (teacherName.contains(std.getFirstName())
-                        && teacherName.contains(std.getLastName())))
-                .collect(Collectors.toList());
-        printList(teachersNamed);
-        System.out.println("Choose the teacher:");
-        int position = Integer.parseInt(in.nextLine());
-        addSubject(schoolClass, mySubject, teachersNamed.get(position) );
+        if (operation.equalsIgnoreCase("add")) {
+            List<Teacher> teachers = school.getTeachers();
+            printList(teachers);
+            // System.out.println("Enter the teacher's name:");
+            // String teacherName = in.nextLine();
+            // List<Teacher> teachersNamed = teachers.stream()
+            //         .filter(std -> (teacherName.contains(std.getFirstName())
+            //                 && teacherName.contains(std.getLastName())))
+            //         .collect(Collectors.toList());
+            // printList(teachersNamed);
+            System.out.println("Choose the teacher:");
+            int position = Integer.parseInt(in.nextLine());
+            addSubject(schoolClass, mySubject, teachers.get(position) );
+        } else if (operation.equalsIgnoreCase("delete")) {
+            removeSubject(schoolClass, mySubject);
+        }
     }
 
     public void editClassProgramInteractive(Scanner in, Class schoolClass) {
@@ -107,7 +141,6 @@ public class ClassService {
     }
 
     public void editClassInteractive(Scanner in, Class schoolClass) {
-        School school = School.getSchool();
         System.out.println("You can edit one of the fields: year, yearPeriod, letter or add a program/student/subject");
         String option = in.nextLine();
         if ("year yearPeriod letter".contains(option)) {
@@ -131,12 +164,22 @@ public class ClassService {
                     editClassProgramInteractive(in, schoolClass);
                     break;
                 case "student":
-                    addStudentToClassInteractive(in, schoolClass);
+                    editStudentInClassInteractive(in, schoolClass, "add");
                     break;
                 case "subject":
-                    addSubjectToClassInteractive(in, schoolClass);
+                    editSubjectInClassInteractive(in, schoolClass, "add");
                     break;
             }
+        }
+    }
+
+    public void deleteClassInteractive(Scanner in, Class schoolClass) {
+        System.out.println("Do you want to delete a student/subject");
+        String option = in.nextLine();
+        if (option.equalsIgnoreCase("student")) {
+            editStudentInClassInteractive(in, schoolClass, "delete");
+        } else if (option.equalsIgnoreCase("subject")){
+            editSubjectInClassInteractive(in, schoolClass, "delete");
         }
     }
 
