@@ -4,6 +4,9 @@ import models.*;
 import models.Class;
 import services.*;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -12,40 +15,54 @@ import java.util.Scanner;
 
 public class Application {
     public static void main(String[] args) {
-
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+        RWService rwService = RWService.getRwService();
         SchoolService schoolService =  SchoolService.getSchoolService();
         ClassService classService = ClassService.getClassService();
         CatalogueService catalogueService = CatalogueService.getCatalogueService();
         School school = School.getSchool(); // School is a singleton
         school.setName("Base School");
 
-        schoolService.addClass(
-                new Class.Builder()
-                .withYear("11")
-                .withYearPeriod("2020-2021")
-                .withLetter("A")
-                .withProgram(new Program("Informatics", 4))
-                .withCatalogue(new Catalogue())
-                .build()
-        );
+        // File f = new File("potato/exemplu.txt");
+        // Path path = Paths.get("csvDatabase/class");
+        // System.out.println(f.getAbsolutePath());
+        // System.out.println(path.toString());
+
+        // schoolService.addClass(
+        //         new Class.Builder()
+        //         .withYear("11")
+        //         .withYearPeriod("2020-2021")
+        //         .withLetter("A")
+        //         .withProgram(new Program("Informatics", 4))
+        //         .withCatalogue(new Catalogue())
+        //         .build()
+        // );
+
+        rwService.readAllData(school);
+        System.out.println();
 
         Scanner commandInput = new Scanner(System.in);
         while (true) {
             String year, letter, target;
+            int classIndex = 0;
             Class myClass;
             System.out.println("NOTE: To add students/subjects you need to edit the class");
             System.out.println("Enter where do you want to make a change: catalogue, class, school; or exit");
             String place = commandInput.nextLine();
+            if (place.equals("exit")) {
+                break;
+            }
             System.out.println("What action do you want to do: add, edit, delete, show");
             String action = commandInput.nextLine();
             switch (place) {
                 case "catalogue":
-                    System.out.println("Enter the class current year:");
-                    year = commandInput.nextLine();
-                    System.out.println("Enter the class letter:");
-                    letter = commandInput.nextLine();
-                    myClass = classService.getCurrentClass(year, letter);
+                    schoolService.printList(school.getClasses());
+                    // System.out.println("Enter the class current year:");
+                    // year = commandInput.nextLine();
+                    // System.out.println("Enter the class letter:");
+                    // letter = commandInput.nextLine();
+                    // myClass = classService.getCurrentClass(year, letter);
+                    classIndex = Integer.parseInt(commandInput.nextLine());
+                    myClass = school.getClasses().get(classIndex);
                     System.out.println(action + " a mark or absence?");
                     target = commandInput.nextLine();
                     if (target.equals("mark")) {
@@ -91,14 +108,17 @@ public class Application {
                         schoolService.addClassInteractive(commandInput);
                         classes = school.getClasses();
                     }
-                    for (Class cls: classes) {
-                        System.out.println(cls);
-                    }
-                    System.out.println("Enter the class current year:");
-                    year = commandInput.nextLine();
-                    System.out.println("Enter the class letter:");
-                    letter = commandInput.nextLine();
-                    myClass = classService.getCurrentClass(year, letter);
+                    // for (Class cls: classes) {
+                    //     System.out.println(cls);
+                    // }
+                    // System.out.println("Enter the class current year:");
+                    // year = commandInput.nextLine();
+                    // System.out.println("Enter the class letter:");
+                    // letter = commandInput.nextLine();
+                    // myClass = classService.getCurrentClass(year, letter);
+                    schoolService.printList(school.getClasses());
+                    classIndex = Integer.parseInt(commandInput.nextLine());
+                    myClass = school.getClasses().get(classIndex);
                     switch (action) {
                         case "show":
                             classService.showClass(myClass);
@@ -126,44 +146,10 @@ public class Application {
                             schoolService.addSchoolInteractive(commandInput);
                             break;
                     }
+                    break;
             }
-            break;
         }
-
-        schoolService.showSchool();
-        Class workingClass = school.getClasses().get(0);
-        try {
-            classService.addStudent(
-                    workingClass,
-                    new Student(
-                            "Richard",
-                            "Brown",
-                            dateFormatter.parse("1/1/2004"),
-                            "50010211",
-                            workingClass
-                    )
-            );
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        try {
-            classService.addSubject(
-                    workingClass,
-                    new Subject(
-                            "Informatics",
-                            "Computer Science"
-                    ),
-                    new Teacher(
-                            "David",
-                            "Rockefeller",
-                            dateFormatter.parse("1/1/2004"),
-                            "50010211"
-                    )
-            );
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        schoolService.showSchool();
+        //schoolService.showSchool();
     }
 }
 

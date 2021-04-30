@@ -1,6 +1,10 @@
 package models;
 
-public class Subject {
+import helpers.FileWritable;
+
+import java.util.Objects;
+
+public class Subject implements FileWritable {
     private String name;
     private String domain; 
 
@@ -22,7 +26,22 @@ public class Subject {
     }
 
     @Override
+    public String getFileName() {
+        return "subjects";
+    }
+
+    @Override
+    public String toCSVString() {
+        return (String.valueOf(hashCode()) + ',' + name + ',' + domain);
+    }
+
+    @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, domain);
     }
 }

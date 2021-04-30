@@ -11,16 +11,19 @@ import java.util.stream.Collectors;
 import java.util.Date;
 
 public class SchoolService {
-    private final static SchoolService schoolService = new SchoolService();
+    private static SchoolService schoolService;
+    private RWService rwService;
 
     private SchoolService () {
-
+        rwService = RWService.getRwService();
     }
 
     public static SchoolService getSchoolService() {
+        if (schoolService == null) {
+            schoolService = new SchoolService();
+        }
         return schoolService;
     }
-
 
     public void addClass(Class schoolClass) {
         School school = School.getSchool();
@@ -29,6 +32,8 @@ public class SchoolService {
         school.setClasses(classes);
 
         String message = "Class " + schoolClass + " has been been added";
+        rwService.addClassToFile(schoolClass);
+        rwService.logger("AddClass - " + new Date().toString());
         System.out.println(message);
     }
 
@@ -74,6 +79,7 @@ public class SchoolService {
         school.setClasses(classes);
         String message = "Class " + deleted + " has been been deleted";
         System.out.println(message);
+        rwService.logger("DeleteClass - " + new Date().toString());
         return deleted;
     }
 
@@ -83,6 +89,8 @@ public class SchoolService {
         students.add(student);
         school.setStudents(students);
         String message = "Student " + student + " has been been added";
+        rwService.addClassToFile(student);
+        rwService.logger("AddStudent - " + new Date().toString());
         System.out.println(message);
     }
 
@@ -93,6 +101,7 @@ public class SchoolService {
         school.setStudents(students);
         String message = "Student " + deleted + " has been been deleted";
         System.out.println(message);
+        rwService.logger("DeleteStudent - " + new Date().toString());
         return deleted;
     }
 
@@ -102,6 +111,8 @@ public class SchoolService {
         teachers.add(teacher);
         school.setTeachers(teachers);
         String message = "Teacher " + teacher + " has been been added";
+        rwService.addClassToFile(teacher);
+        rwService.logger("AddTeacher - " + new Date().toString());
         System.out.println(message);
     }
 
@@ -112,6 +123,7 @@ public class SchoolService {
         school.setTeachers(teachers);
         String message = "Teacher " + deleted + " has been been deleted";
         System.out.println(message);
+        rwService.logger("DeleteTeacher - " + new Date().toString());
         return deleted;
     }
 
@@ -121,6 +133,8 @@ public class SchoolService {
         programs.add(program);
         school.setPrograms(programs);
         String message = "Program " + program + " has been been added";
+        rwService.addClassToFile(program);
+        rwService.logger("AddProgram - " + new Date().toString());
         System.out.println(message);
     }
 
@@ -131,6 +145,7 @@ public class SchoolService {
         school.setPrograms(programs);
         String message = "Program " + deleted + " has been been deleted";
         System.out.println(message);
+        rwService.logger("DeleteProgram - " + new Date().toString());
         return deleted;
     }
 
@@ -140,6 +155,8 @@ public class SchoolService {
         subjects.add(subject);
         school.setSubjects(subjects);
         String message = "Subject " + subject + " has been been added";
+        rwService.addClassToFile(subject);
+        rwService.logger("AddSubject - " + new Date().toString());
         System.out.println(message);
     }
 
@@ -150,6 +167,7 @@ public class SchoolService {
         school.setSubjects(subjects);
         String message = "Subject " + deleted + " has been been deleted";
         System.out.println(message);
+        rwService.logger("DeleteSubject - " + new Date().toString());
         return deleted;
     }
 
@@ -158,6 +176,7 @@ public class SchoolService {
         System.out.println("Enter the name of the school");
         String schoolName = in.nextLine();
         school.setName(schoolName);
+        rwService.logger("EditSchool - " + new Date().toString());
     }
 
     public void deleteClassInteractive(Scanner in) {
@@ -172,13 +191,15 @@ public class SchoolService {
     public void deleteStudentInteractive(Scanner in) {
         School school = School.getSchool();
         List<Student> students = school.getStudents();
-        System.out.println("Enter the name of the student:");
-        String studentName = in.nextLine();
-        List<Student> studentsNamed = students.stream()
-                .filter(stud -> studentName.contains(stud.getLastName())
-                        && studentName.contains(stud.getFirstName()))
-                .collect(Collectors.toList());
-        printList(studentsNamed);
+        // System.out.println("Enter the name of the student:");
+        // int studentIndex = Integer.parseInt(in.nextLine());
+        // String studentName = in.nextLine();
+        // List<Student> studentsNamed = students.stream()
+        //         .filter(stud -> studentName.contains(stud.getLastName())
+        //                 && studentName.contains(stud.getFirstName()))
+        //         .collect(Collectors.toList());
+        // printList(studentsNamed);
+        printList(students);
         System.out.println("Choose the student to delete:");
         int choice = Integer.parseInt(in.nextLine());
         removeStudent(choice);
@@ -187,13 +208,13 @@ public class SchoolService {
     public void deleteTeacherInteractive(Scanner in) {
         School school = School.getSchool();
         List<Teacher> teachers = school.getTeachers();
-        System.out.println("Enter the name of the teacher:");
-        String teacherName = in.nextLine();
-        List<Teacher> teachersNamed = teachers.stream()
-                .filter(stud -> teacherName.contains(stud.getLastName())
-                        && teacherName.contains(stud.getFirstName()))
-                .collect(Collectors.toList());
-        printList(teachersNamed);
+        // System.out.println("Enter the name of the teacher:");
+        // String teacherName = in.nextLine();
+        // List<Teacher> teachersNamed = teachers.stream()
+        //         .filter(stud -> teacherName.contains(stud.getLastName())
+        //                 && teacherName.contains(stud.getFirstName()))
+        //         .collect(Collectors.toList());
+        printList(teachers);
         System.out.println("Choose the teacher to delete:");
         int choice = Integer.parseInt(in.nextLine());
         removeTeacher(choice);
@@ -218,7 +239,6 @@ public class SchoolService {
     }
 
     public void deleteSchoolInteractive(Scanner in) {
-        School school = School.getSchool();
         System.out.println("Enter what to delete class/student/teacher/program/subject");
         String elementDeleted = in.nextLine();
         switch (elementDeleted) {
@@ -347,9 +367,10 @@ public class SchoolService {
             System.out.println("Has marks:");
             catalogueService.showGrades(schoolClass);
         }
+        rwService.logger("ShowSchool - " + new Date().getTime());
     }
 
-    private <T> void printList(List<T> list) {
+    public <T> void printList(List<T> list) {
         for (int i = 0; i < list.size(); i++) {
             System.out.println(i + ". " + list.get(i));
         }

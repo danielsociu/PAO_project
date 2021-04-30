@@ -1,8 +1,11 @@
 package models;
 
-import java.util.Date;
+import helpers.FileWritable;
 
-public class Absence {
+import java.util.Date;
+import java.util.Objects;
+
+public class Absence implements FileWritable {
     Student student;
     Subject subject;
     Teacher teacher;
@@ -67,6 +70,30 @@ public class Absence {
 
     public void setTeacher(Teacher teacher) {
         this.teacher = teacher;
+    }
+
+    @Override
+    public String toCSVString() {
+        return (String.valueOf(hashCode()) + ',' + motivated + "," +  date.getTime()
+                + ',' +  teacher.hashCode() + ',' + student.hashCode()
+                + ',' + subject.hashCode()
+        );
+    }
+
+    @Override
+    public String getFileName() {
+        return "absences";
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(subject, student, date);
+    }
+
+    @Override
+    public String toString() {
+        return "Absence " + " at " + subject + " by "
+                + teacher + " to " + student;
     }
 
     public static class Builder {

@@ -1,10 +1,13 @@
 package models;
 
+import helpers.FileWritable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
-public class Class {
+public class Class implements FileWritable {
     private String year;
     private String yearPeriod;
     private String letter;
@@ -78,6 +81,34 @@ public class Class {
     }
 
     @Override
+    public String toCSVString() {
+        return (String.valueOf(hashCode()) + ',' + year + ',' + letter + ','
+                + yearPeriod + ',' + String.valueOf(program.hashCode()));
+    }
+
+    @Override
+    public String getFileName() {
+        return "classes";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof Class)) {
+            return false;
+        }
+        Class myClass = (Class) o;
+        return Objects.equals(year, myClass.getYear())&&
+                Objects.equals(letter, myClass.getLetter()) &&
+                Objects.equals(yearPeriod, myClass.getYearPeriod());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(year, letter, yearPeriod);
+    }
+
+    @Override
     public String toString() {
         return "Class " + year + '-' + letter + ' ' + yearPeriod;
     }
@@ -119,6 +150,9 @@ public class Class {
             }
             if (this.schoolClass.getStudents() == null) {
                 this.schoolClass.setStudents(new ArrayList<Student>());
+            }
+            if (this.schoolClass.getCatalogue() == null) {
+                this.schoolClass.setCatalogue(new Catalogue());
             }
             return this.schoolClass;
         }

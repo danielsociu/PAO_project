@@ -1,8 +1,11 @@
 package models;
 
-import java.util.Date;
+import helpers.FileWritable;
 
-public class Person {
+import java.util.Date;
+import java.util.Objects;
+
+public class Person{
     private String firstName;
     private String lastName;
     private Date birthDate;
@@ -37,6 +40,16 @@ public class Person {
     }
     public void setPid(String pid) {
         this.pid = pid;
+    }
+
+    public String toCSVString() {
+        return (firstName + ',' + lastName + ',' +
+                birthDate.getTime() + ',' + pid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName, pid);
     }
 
     @Override

@@ -7,11 +7,17 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClassService {
-    private final static ClassService classService = new ClassService();
+    private static ClassService classService;
+    private RWService rwService;
 
-    private ClassService() { }
+    private ClassService() {
+        rwService = RWService.getRwService();
+    }
 
     public static ClassService getClassService() {
+        if (classService == null) {
+            classService = new ClassService();
+        }
         return classService;
     }
 
@@ -31,6 +37,7 @@ public class ClassService {
 
     public void showClass(Class schoolClass) {
         System.out.println(schoolClass);
+        rwService.logger("ShowClass - " + new Date().toString());
     }
 
     public void addStudent(Class schoolClass, Student student) {
@@ -42,6 +49,8 @@ public class ClassService {
 
         String message = "Student " + student +
                 " has been added to class " + schoolClass;
+        rwService.addClassToObjectFile(schoolClass, student);
+        rwService.logger("AddStudentToClass - " + new Date().toString());
         System.out.println(message);
     }
 
@@ -53,21 +62,25 @@ public class ClassService {
 
         String message = "Student " + student +
                 " has been removed from class " + schoolClass;
+        rwService.logger("RemoveStudentFromClass - " + new Date().toString());
         System.out.println(message);
     }
 
     public void addSubject(Class schoolClass, Subject subject, Teacher teacher) {
-        schoolClass.getSubjects().put(subject, teacher);
         Set<Class> teacherClasses = teacher.getClasses();
         if (!teacherClasses.contains(schoolClass)) {
             teacherClasses.add(schoolClass);
             teacher.setClasses(teacherClasses);
+            rwService.addClassToObjectFile(teacher, schoolClass);
         }
         HashMap<Subject, Teacher> classSubjects = schoolClass.getSubjects();
         classSubjects.put(subject,teacher);
+        schoolClass.setSubjects(classSubjects);
 
         String message = "Teacher " + teacher + " is now teaching " +
                 subject + " in class " + schoolClass;
+        rwService.addClassToObjectFile(schoolClass, subject, teacher);
+        rwService.logger("AddSubjectToClass - " + new Date().toString());
         System.out.println(message);
     }
     public void removeSubject(Class schoolClass, Subject subject) {
@@ -78,6 +91,7 @@ public class ClassService {
 
         String message = "Subject " + subject +
                 " has been removed from class " + schoolClass;
+        rwService.logger("RemoveSubjectFromClass - " + new Date().toString());
         System.out.println(message);
     }
 
@@ -107,12 +121,14 @@ public class ClassService {
         School school = School.getSchool();
         List<Subject> subjects = school.getSubjects();
         printList(subjects);
-        System.out.println("Enter the subject's name:");
-        String subjectName = in.nextLine().toLowerCase();
-        Subject mySubject = subjects.stream()
-                .filter(sub -> subjectName.contains(sub.getName().toLowerCase()))
-                .findFirst()
-                .orElse(null);
+        System.out.println("Enter the subject's digit:");
+        int subjectIndex = Integer.parseInt(in.nextLine());
+        //String subjectName = in.nextLine().toLowerCase();
+        Subject mySubject = subjects.get(subjectIndex);
+        // Subject mySubject = subjects.stream()
+        //         .filter(sub -> subjectName.contains(sub.getName().toLowerCase()))
+        //         .findFirst()
+        //         .orElse(null);
         if (operation.equalsIgnoreCase("add")) {
             List<Teacher> teachers = school.getTeachers();
             printList(teachers);
@@ -138,6 +154,7 @@ public class ClassService {
         System.out.println("Choose the program's number");
         int position = Integer.parseInt(in.nextLine());
         schoolClass.setProgram(programs.get(position));
+        rwService.logger("EditProgram - " + new Date().toString());
     }
 
     public void editClassInteractive(Scanner in, Class schoolClass) {
@@ -149,12 +166,15 @@ public class ClassService {
             switch (option) {
                 case "year":
                     schoolClass.setYear(answer);
+                    rwService.logger("EditClassYear - " + new Date().toString());
                     break;
                 case "yearPeriod":
                     schoolClass.setYearPeriod(answer);
+                    rwService.logger("EditClassYearPeriod - " + new Date().toString());
                     break;
                 case "letter":
                     schoolClass.setLetter(answer);
+                    rwService.logger("EditClassLetter - " + new Date().toString());
                     break;
             }
         } else {

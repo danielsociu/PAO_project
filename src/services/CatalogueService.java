@@ -7,11 +7,17 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class CatalogueService {
-    private static final CatalogueService catalogueService = new CatalogueService();
+    private static CatalogueService catalogueService;
+    private RWService rwService;
 
-    private CatalogueService() { }
+    private CatalogueService() {
+        rwService = RWService.getRwService();
+    }
 
     public static CatalogueService getCatalogueService() {
+        if (catalogueService == null) {
+            catalogueService = new CatalogueService();
+        }
         return catalogueService;
     }
 
@@ -31,13 +37,15 @@ public class CatalogueService {
             }
         }
         printList(schoolClass.getStudents());
-        System.out.println("Enter student name:");
-        String studentName = in.nextLine();
-        Student student = schoolClass.getStudents().stream()
-                .filter(stud -> (studentName.contains(stud.getFirstName())
-                        && studentName.contains(stud.getLastName())))
-                .findFirst()
-                .orElse(null);
+        System.out.println("Enter student index:");
+        int studentIndex = Integer.parseInt(in.nextLine());
+        Student student = schoolClass.getStudents().get(studentIndex);
+        // String studentName = in.nextLine();
+        // Student student = schoolClass.getStudents().stream()
+        //         .filter(stud -> (studentName.contains(stud.getFirstName())
+        //                 && studentName.contains(stud.getLastName())))
+        //         .findFirst()
+        //         .orElse(null);
         System.out.println("Enter evaluation method:");
         String evaluationMethod = in.nextLine();
         System.out.println("Enter score:");
@@ -70,13 +78,15 @@ public class CatalogueService {
             }
         }
         printList(schoolClass.getStudents());
-        System.out.println("Enter student name:");
-        String studentName = in.nextLine();
-        Student student = schoolClass.getStudents().stream()
-                .filter(stud -> (studentName.contains(stud.getFirstName())
-                        && studentName.contains(stud.getLastName())))
-                .findFirst()
-                .orElse(null);
+        System.out.println("Enter student index:");
+        int studentIndex = Integer.parseInt(in.nextLine());
+        Student student = schoolClass.getStudents().get(studentIndex);
+        // String studentName = in.nextLine();
+        // Student student = schoolClass.getStudents().stream()
+        //         .filter(stud -> (studentName.contains(stud.getFirstName())
+        //                 && studentName.contains(stud.getLastName())))
+        //         .findFirst()
+        //         .orElse(null);
         Subject finalSubject = subject;
         Teacher finalTeacher = teacher;
         List<Grade> grades = schoolClass.getCatalogue().getGrades().stream()
@@ -90,6 +100,7 @@ public class CatalogueService {
             int updated = Integer.parseInt(in.nextLine());
             System.out.println("Enter new score:");
             double newGrade = Double.parseDouble(in.nextLine());
+            rwService.logger("EditGrade - " + new Date().toString());
             grades.get(updated).setScore(newGrade);
         } else if (operation.equalsIgnoreCase("delete")) {
             System.out.println("Enter grade to be deleted:");
@@ -114,13 +125,15 @@ public class CatalogueService {
             }
         }
         printList(schoolClass.getStudents());
-        System.out.println("Enter student name:");
-        String studentName = in.nextLine();
-        Student student = schoolClass.getStudents().stream()
-                .filter(stud -> (studentName.contains(stud.getFirstName())
-                        && studentName.contains(stud.getLastName())))
-                .findFirst()
-                .orElse(null);
+        System.out.println("Enter student index:");
+        int studentIndex = Integer.parseInt(in.nextLine());
+        Student student = schoolClass.getStudents().get(studentIndex);
+        // String studentName = in.nextLine();
+        // Student student = schoolClass.getStudents().stream()
+        //         .filter(stud -> (studentName.contains(stud.getFirstName())
+        //                 && studentName.contains(stud.getLastName())))
+        //         .findFirst()
+        //         .orElse(null);
         System.out.println("Motivated true/false:");
         boolean motivated = Boolean.parseBoolean(in.nextLine());
         addAbsence(schoolClass,
@@ -150,13 +163,15 @@ public class CatalogueService {
             }
         }
         printList(schoolClass.getStudents());
-        System.out.println("Enter student name:");
-        String studentName = in.nextLine();
-        Student student = schoolClass.getStudents().stream()
-                .filter(stud -> (studentName.contains(stud.getFirstName())
-                        && studentName.contains(stud.getLastName())))
-                .findFirst()
-                .orElse(null);
+        System.out.println("Enter student index:");
+        int studentIndex = Integer.parseInt(in.nextLine());
+        Student student = schoolClass.getStudents().get(studentIndex);
+        // String studentName = in.nextLine();
+        // Student student = schoolClass.getStudents().stream()
+        //         .filter(stud -> (studentName.contains(stud.getFirstName())
+        //                 && studentName.contains(stud.getLastName())))
+        //         .findFirst()
+        //         .orElse(null);
         Subject finalSubject = subject;
         Teacher finalTeacher = teacher;
         List<Absence> absences = schoolClass.getCatalogue().getAbsences().stream()
@@ -171,6 +186,7 @@ public class CatalogueService {
             System.out.println("Enter new absence value:");
             boolean newMotivated = Boolean.parseBoolean(in.nextLine());
             absences.get(updated).setMotivated(newMotivated);
+            rwService.logger("EditAbsence - " + new Date().toString());
         } else if (operation.equalsIgnoreCase("delete")) {
             System.out.println("Enter absence to be deleted:");
             int deleted = Integer.parseInt(in.nextLine());
@@ -188,6 +204,8 @@ public class CatalogueService {
         schoolClass.getCatalogue().setGrades(grades);
         String message = "Grade " + grade +
                 " has been added to class " + schoolClass;
+        rwService.addClassToFile(schoolClass, grade);
+        rwService.logger("AddGrade - " + new Date().toString());
         System.out.println(message);
     }
 
@@ -206,6 +224,8 @@ public class CatalogueService {
         schoolClass.getCatalogue().setAbsences(absences);
         String message = "Absence " + absence +
                 " has been added to class " + schoolClass;
+        rwService.addClassToFile(schoolClass, absence);
+        rwService.logger("AddAbsence - " + new Date().toString());
         System.out.println(message);
     }
 
@@ -216,6 +236,7 @@ public class CatalogueService {
         schoolClass.getCatalogue().setGrades(grades);
         String message = "Grade " + grade +
                 " has been deleted from class " + schoolClass;
+        rwService.logger("DeleteGrade - " + new Date().toString());
         System.out.println(message);
     }
 
@@ -226,6 +247,7 @@ public class CatalogueService {
         schoolClass.getCatalogue().setAbsences(absences);
         String message = "Absence " + absence +
                 " has been deleted from class " + schoolClass;
+        rwService.logger("DeleteAbsence - " + new Date().toString());
         System.out.println(message);
     }
 
@@ -234,6 +256,7 @@ public class CatalogueService {
         if (grades.size() > 0) {
             schoolClass.getCatalogue().getGrades().forEach(System.out::println);
         }
+        rwService.logger("ShowGrades - " + new Date().toString());
     }
 
     public void showAbsences(Class schoolClass) {
@@ -241,6 +264,7 @@ public class CatalogueService {
         if (absences.size() > 0) {
             absences.forEach(System.out::println);
         }
+        rwService.logger("ShowAbsences - " + new Date().toString());
     }
 
     private <T> void printList(List<T> list) {

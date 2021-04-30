@@ -1,11 +1,10 @@
 package models;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import helpers.FileWritable;
 
-public class Grade {
+import java.util.*;
+
+public class Grade implements FileWritable {
     private double score;
     private Date date;
     private String evaluationMethod;
@@ -74,6 +73,30 @@ public class Grade {
         this.subject = subject;
     }
 
+    @Override
+    public String toCSVString() {
+        return (String.valueOf(hashCode()) + ',' + score + "," +  date.getTime()
+                + ',' + evaluationMethod + ',' + teacher.hashCode() + ',' + student.hashCode()
+                + ',' + subject.hashCode()
+        );
+    }
+
+    @Override
+    public String getFileName() {
+        return "grades";
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(subject, student, date);
+    }
+
+    @Override
+    public String toString() {
+        return "Grade " + score + " at " + subject + " by "
+                + teacher + " to " + student;
+    }
+
     public static class Builder {
         private Grade grade = new Grade();
 
@@ -104,10 +127,5 @@ public class Grade {
         public Grade build() {
             return this.grade;
         }
-    }
-    @Override
-    public String toString() {
-        return "Grade " + score + " at " + subject + " by "
-                + teacher + " to " + student;
     }
 }

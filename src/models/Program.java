@@ -1,6 +1,10 @@
 package models;
 
-public class Program {
+import helpers.FileWritable;
+
+import java.util.Objects;
+
+public class Program implements FileWritable {
     private String name;
     private int numberYears;
 
@@ -23,7 +27,22 @@ public class Program {
     }
 
     @Override
+    public String getFileName() {
+        return "programs";
+    }
+
+    @Override
+    public String toCSVString() {
+        return (String.valueOf(hashCode()) + ',' + name + ',' + String.valueOf(numberYears));
+    }
+
+    @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, numberYears);
     }
 }
