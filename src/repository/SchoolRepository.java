@@ -12,6 +12,15 @@ public class SchoolRepository {
         try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(sql)) {
             statement.setString(1, school.getName());
             statement.executeUpdate();
+            try (ResultSet generatedKey = statement.getGeneratedKeys()) {
+                if (generatedKey.next()) {
+                    int idSchool = generatedKey.getInt(1);
+                    school.setIdSchool(idSchool);
+                } else {
+                    throw new SQLException("Failed to get school id!");
+                }
+
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -32,8 +41,8 @@ public class SchoolRepository {
         }
     }
 
-    public int getSchool(String name) throws Exception {
-        String sql = "select * from school sc where sc = ?";
+    public int getSchool(String name) throws SQLException {
+        String sql = "select * from school sc where sc.name = ?";
         try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(sql)) {
             statement.setString(1, name);
             ResultSet result = statement.executeQuery();
@@ -45,10 +54,31 @@ public class SchoolRepository {
                 school.setName(schoolName);
                 return schoolId;
             }
-            throw new Exception("School not found!");
+            throw new SQLException("School not found!");
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new Exception("Cannot get statement!");
+            throw new SQLException("Cannot get statement!");
         }
     }
+
+    public int getSchoolId(int idSchool) throws SQLException {
+        String sql = "select * from school sc where sc.id_school = ?";
+        try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(sql)) {
+            statement.setInt(1, idSchool);
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
+                int schoolId = result.getInt(1);
+                String schoolName = result.getString("name");
+                School school = School.getSchool();
+                school.setIdSchool(schoolId);
+                school.setName(schoolName);
+                return schoolId;
+            }
+            throw new SQLException("School not found!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new SQLException("Cannot get statement!");
+        }
+    }
+
 }

@@ -2,11 +2,13 @@ package main;
 
 import models.*;
 import models.Class;
+import repository.SchoolRepository;
 import services.*;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -15,12 +17,33 @@ import java.util.Scanner;
 
 public class Application {
     public static void main(String[] args) {
+        // Services
         RWService rwService = RWService.getRwService();
         SchoolService schoolService =  SchoolService.getSchoolService();
         ClassService classService = ClassService.getClassService();
         CatalogueService catalogueService = CatalogueService.getCatalogueService();
+        // Repos
+        SchoolRepository schoolRepository = new SchoolRepository();
+
+        Scanner commandInput = new Scanner(System.in);
+
+        System.out.println("Select the school:\n0 - new school");
+        schoolRepository.listSchools();
+        int schoolId = Integer.parseInt(commandInput.nextLine());
+
         School school = School.getSchool(); // School is a singleton
-        school.setName("Base School");
+        if (schoolId == 0) {
+            System.out.println("Enter the school name:");
+            String schoolName = commandInput.nextLine();
+            school.setName(schoolName);
+            schoolRepository.addSchool(school);
+        } else {
+            try {
+                schoolRepository.getSchoolId(schoolId);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            };
+        }
 
         // File f = new File("potato/exemplu.txt");
         // Path path = Paths.get("csvDatabase/class");
@@ -40,7 +63,6 @@ public class Application {
         rwService.readAllData(school);
         System.out.println();
 
-        Scanner commandInput = new Scanner(System.in);
         while (true) {
             String year, letter, target;
             int classIndex = 0;
