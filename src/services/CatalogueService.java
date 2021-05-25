@@ -2,7 +2,10 @@ package services;
 
 import models.*;
 import models.Class;
+import repository.AbsenceRepository;
+import repository.GradeRepository;
 
+import java.lang.management.GarbageCollectorMXBean;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -96,12 +99,14 @@ public class CatalogueService {
                 .collect(Collectors.toList());
         printList(grades);
         if (operation.equalsIgnoreCase("edit")) {
+            GradeRepository gradeRepository = new GradeRepository();
             System.out.println("Enter grade to be updated:");
             int updated = Integer.parseInt(in.nextLine());
             System.out.println("Enter new score:");
             double newGrade = Double.parseDouble(in.nextLine());
             rwService.logger("EditGrade - " + new Date().toString());
             grades.get(updated).setScore(newGrade);
+            gradeRepository.updateGrade(grades.get(updated));
         } else if (operation.equalsIgnoreCase("delete")) {
             System.out.println("Enter grade to be deleted:");
             int deleted = Integer.parseInt(in.nextLine());
@@ -181,12 +186,14 @@ public class CatalogueService {
                 .collect(Collectors.toList());
         printList(absences);
         if (operation.equalsIgnoreCase("edit")) {
+            AbsenceRepository absenceRepository = new AbsenceRepository();
             System.out.println("Enter absence to be updated:");
             int updated = Integer.parseInt(in.nextLine());
             System.out.println("Enter new absence value:");
             boolean newMotivated = Boolean.parseBoolean(in.nextLine());
             absences.get(updated).setMotivated(newMotivated);
             rwService.logger("EditAbsence - " + new Date().toString());
+            absenceRepository.updateAbsence(absences.get(updated));
         } else if (operation.equalsIgnoreCase("delete")) {
             System.out.println("Enter absence to be deleted:");
             int deleted = Integer.parseInt(in.nextLine());
@@ -195,6 +202,7 @@ public class CatalogueService {
     }
 
     public void addGrade(Class schoolClass, Grade grade) {
+        GradeRepository gradeRepository = new GradeRepository();
         List<Grade> grades = schoolClass.getCatalogue().getGrades();
         grades.add(grade);
 
@@ -206,10 +214,12 @@ public class CatalogueService {
                 " has been added to class " + schoolClass;
         rwService.addClassToFile(schoolClass, grade);
         rwService.logger("AddGrade - " + new Date().toString());
+        gradeRepository.addGrade(schoolClass, grade);
         System.out.println(message);
     }
 
     public void addAbsence(Class schoolClass, Absence absence) {
+        AbsenceRepository absenceRepository = new AbsenceRepository();
         List<Absence> absences = schoolClass.getCatalogue().getAbsences();
         absences.add(absence);
 
@@ -226,10 +236,12 @@ public class CatalogueService {
                 " has been added to class " + schoolClass;
         rwService.addClassToFile(schoolClass, absence);
         rwService.logger("AddAbsence - " + new Date().toString());
+        absenceRepository.addAbsence(schoolClass, absence);
         System.out.println(message);
     }
 
     public void deleteGrade(Class schoolClass, Grade grade) {
+        GradeRepository gradeRepository = new GradeRepository();
         List<Grade> grades = schoolClass.getCatalogue().getGrades();
         grades.remove(grade);
 
@@ -237,10 +249,12 @@ public class CatalogueService {
         String message = "Grade " + grade +
                 " has been deleted from class " + schoolClass;
         rwService.logger("DeleteGrade - " + new Date().toString());
+        gradeRepository.deleteGrade(grade);
         System.out.println(message);
     }
 
     public void deleteAbsence(Class schoolClass, Absence absence) {
+        AbsenceRepository absenceRepository = new AbsenceRepository();
         List<Absence> absences = schoolClass.getCatalogue().getAbsences();
         absences.remove(absence);
 
@@ -248,6 +262,7 @@ public class CatalogueService {
         String message = "Absence " + absence +
                 " has been deleted from class " + schoolClass;
         rwService.logger("DeleteAbsence - " + new Date().toString());
+        absenceRepository.deleteAbsence(absence);
         System.out.println(message);
     }
 

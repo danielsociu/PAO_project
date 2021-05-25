@@ -2,6 +2,7 @@ package services;
 
 import models.*;
 import models.Class;
+import repository.*;
 
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
@@ -26,6 +27,7 @@ public class SchoolService {
     }
 
     public void addClass(Class schoolClass) {
+        ClassRepository classRepository = new ClassRepository();
         School school = School.getSchool();
         List<Class> classes = school.getClasses();
         classes.add(schoolClass);
@@ -34,6 +36,7 @@ public class SchoolService {
         String message = "Class " + schoolClass + " has been been added";
         rwService.addClassToFile(schoolClass);
         rwService.logger("AddClass - " + new Date().toString());
+        classRepository.addClass(school, schoolClass);
         System.out.println(message);
     }
 
@@ -73,6 +76,7 @@ public class SchoolService {
     }
 
     public Class removeClass(int position) {
+        ClassRepository classRepository = new ClassRepository();
         School school = School.getSchool();
         List<Class> classes = school.getClasses();
         Class deleted = classes.remove(position);
@@ -80,10 +84,12 @@ public class SchoolService {
         String message = "Class " + deleted + " has been been deleted";
         System.out.println(message);
         rwService.logger("DeleteClass - " + new Date().toString());
+        classRepository.removeClass(deleted);
         return deleted;
     }
 
     public void addStudent(Student student) {
+        StudentRepository studentRepository = new StudentRepository();
         School school = School.getSchool();
         List<Student> students = school.getStudents();
         students.add(student);
@@ -91,10 +97,12 @@ public class SchoolService {
         String message = "Student " + student + " has been been added";
         rwService.addClassToFile(student);
         rwService.logger("AddStudent - " + new Date().toString());
+        studentRepository.addStudent(student);
         System.out.println(message);
     }
 
     public Student removeStudent(int position) {
+        StudentRepository studentRepository = new StudentRepository();
         School school = School.getSchool();
         List<Student> students = school.getStudents();
         Student deleted = students.remove(position);
@@ -102,10 +110,12 @@ public class SchoolService {
         String message = "Student " + deleted + " has been been deleted";
         System.out.println(message);
         rwService.logger("DeleteStudent - " + new Date().toString());
+        studentRepository.removeStudent(deleted);
         return deleted;
     }
 
     public void addTeacher(Teacher teacher) {
+        TeacherRepository teacherRepository = new TeacherRepository();
         School school = School.getSchool();
         List<Teacher> teachers = school.getTeachers();
         teachers.add(teacher);
@@ -113,10 +123,12 @@ public class SchoolService {
         String message = "Teacher " + teacher + " has been been added";
         rwService.addClassToFile(teacher);
         rwService.logger("AddTeacher - " + new Date().toString());
+        teacherRepository.addTeacher(teacher);
         System.out.println(message);
     }
 
     public Teacher removeTeacher(int position) {
+        TeacherRepository teacherRepository = new TeacherRepository();
         School school = School.getSchool();
         List<Teacher> teachers = school.getTeachers();
         Teacher deleted = teachers.remove(position);
@@ -124,10 +136,12 @@ public class SchoolService {
         String message = "Teacher " + deleted + " has been been deleted";
         System.out.println(message);
         rwService.logger("DeleteTeacher - " + new Date().toString());
+        teacherRepository.removeTeacher(deleted);
         return deleted;
     }
 
     public void addProgram(Program program) {
+        ProgramRepository programRepository = new ProgramRepository();
         School school = School.getSchool();
         List<Program> programs = school.getPrograms();
         programs.add(program);
@@ -135,10 +149,12 @@ public class SchoolService {
         String message = "Program " + program + " has been been added";
         rwService.addClassToFile(program);
         rwService.logger("AddProgram - " + new Date().toString());
+        programRepository.addProgram(program);
         System.out.println(message);
     }
 
     public Program removeProgram(int position) {
+        ProgramRepository programRepository = new ProgramRepository();
         School school = School.getSchool();
         List<Program> programs = school.getPrograms();
         Program deleted = programs.remove(position);
@@ -146,10 +162,12 @@ public class SchoolService {
         String message = "Program " + deleted + " has been been deleted";
         System.out.println(message);
         rwService.logger("DeleteProgram - " + new Date().toString());
+        programRepository.removeProgram(deleted);
         return deleted;
     }
 
     public void addSubject(Subject subject) {
+        SubjectRepository subjectRepository = new SubjectRepository();
         School school = School.getSchool();
         List<Subject> subjects = school.getSubjects();
         subjects.add(subject);
@@ -157,10 +175,12 @@ public class SchoolService {
         String message = "Subject " + subject + " has been been added";
         rwService.addClassToFile(subject);
         rwService.logger("AddSubject - " + new Date().toString());
+        subjectRepository.addSubject(subject);
         System.out.println(message);
     }
 
     public Subject removeSubject(int position) {
+        SubjectRepository subjectRepository = new SubjectRepository();
         School school = School.getSchool();
         List<Subject> subjects = school.getSubjects();
         Subject deleted = subjects.remove(position);
@@ -168,15 +188,18 @@ public class SchoolService {
         String message = "Subject " + deleted + " has been been deleted";
         System.out.println(message);
         rwService.logger("DeleteSubject - " + new Date().toString());
+        subjectRepository.removeSubject(deleted);
         return deleted;
     }
 
     public void editSchoolInteractive(Scanner in) {
+        SchoolRepository schoolRepository = new SchoolRepository();
         School school = School.getSchool();
         System.out.println("Enter the name of the school");
         String schoolName = in.nextLine();
         school.setName(schoolName);
         rwService.logger("EditSchool - " + new Date().toString());
+        schoolRepository.updateSchool(school);
     }
 
     public void deleteClassInteractive(Scanner in) {

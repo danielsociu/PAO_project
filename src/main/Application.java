@@ -45,6 +45,10 @@ public class Application {
             };
         }
 
+
+        // rwService.readAllData(school);
+        System.out.println();
+
         // File f = new File("potato/exemplu.txt");
         // Path path = Paths.get("csvDatabase/class");
         // System.out.println(f.getAbsolutePath());
@@ -59,9 +63,6 @@ public class Application {
         //         .withCatalogue(new Catalogue())
         //         .build()
         // );
-
-        rwService.readAllData(school);
-        System.out.println();
 
         while (true) {
             String year, letter, target;

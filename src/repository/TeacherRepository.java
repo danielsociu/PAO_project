@@ -10,9 +10,10 @@ public class TeacherRepository {
     public void addTeacher(Teacher teacher) {
         String sql = "insert into teacher (pid_teacher, first_name, last_name, birth_date) " +
                 "values (?, ?, ?, ?)";
-        try (
-            PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(sql);
-        ) {
+        try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(
+                sql,
+                Statement.RETURN_GENERATED_KEYS
+        )) {
             statement.setString(1, teacher.getPid());
             statement.setString(2, teacher.getFirstName());
             statement.setString(3, teacher.getLastName());
@@ -23,9 +24,19 @@ public class TeacherRepository {
         }
     }
 
+    public void removeTeacher(Teacher teacher) {
+        String sql = "delete from teacher where pid_teacher = ?";
+        try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(sql)) {
+            statement.setString(1, teacher.getPid());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void addTeacherClasses(Teacher teacher) {
-        String sqlQuery = "select * from teacher_class where pid_teacher = ?";
-        String sqlAdd = "insert into teacher_class (pid_teacher, id_class) " +
+        String sqlQuery = "select * from teacher_classes where pid_teacher = ?";
+        String sqlAdd = "insert into teacher_classes (pid_teacher, id_class) " +
                 "values (?, ?)";
         try (
             PreparedStatement statementQuery = DatabaseConnection.getConnection().prepareStatement(
@@ -53,6 +64,18 @@ public class TeacherRepository {
                 }
             }
             statementAdd.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addTeacherClass(Teacher teacher, models.Class myClass) {
+        String sql = "insert into teacher_classes (pid_teacher, id_class) " +
+                "values (?, ?)";
+        try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(sql)) {
+            statement.setString(1, teacher.getPid());
+            statement.setInt(2, myClass.getIdClass());
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

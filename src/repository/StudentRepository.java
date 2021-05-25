@@ -9,7 +9,10 @@ public class StudentRepository {
     public void addStudent(Student student) {
         String sql = "insert into student (pid_student, id_class, first_name, last_name, birth_date) " +
                 "values (?, ?, ?, ?, ?)";
-        try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(sql)) {
+        try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(
+                sql,
+                Statement.RETURN_GENERATED_KEYS
+        )) {
             statement.setString(1, student.getPid());
             if (student.getStudentClass() != null) {
                 statement.setInt(2, student.getStudentClass().getIdClass());
@@ -24,10 +27,25 @@ public class StudentRepository {
             e.printStackTrace();
         }
     }
-    public void addStudentClass(Student student, models.Class studentClass) {
+
+    public void removeStudent(Student student) {
+        String sql = "delete from student where pid_student = ?";
+        try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(sql)) {
+            statement.setString(1, student.getPid());
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateStudentClass(models.Class studentClass, Student student) {
         String sql = "update student set id_class = ? where pid_student = ?";
         try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(sql)) {
-            statement.setInt(1, studentClass.getIdClass());
+            if (studentClass == null) {
+                statement.setNull(1, 0);
+            } else {
+                statement.setInt(1, studentClass.getIdClass());
+            }
             statement.setString(2, student.getPid());
             statement.executeUpdate();
         } catch (SQLException e) {

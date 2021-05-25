@@ -2,6 +2,9 @@ package services;
 
 import models.*;
 import models.Class;
+import repository.ClassRepository;
+import repository.StudentRepository;
+import repository.TeacherRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,6 +44,7 @@ public class ClassService {
     }
 
     public void addStudent(Class schoolClass, Student student) {
+        StudentRepository studentRepository = new StudentRepository();
         List<Student> classStudents = schoolClass.getStudents();
         student.setStudentClass(schoolClass);
         classStudents.add(student);
@@ -51,10 +55,12 @@ public class ClassService {
                 " has been added to class " + schoolClass;
         rwService.addClassToObjectFile(schoolClass, student);
         rwService.logger("AddStudentToClass - " + new Date().toString());
+        studentRepository.updateStudentClass(schoolClass, student);
         System.out.println(message);
     }
 
     public void removeStudent(Class schoolClass, Student student) {
+        StudentRepository studentRepository = new StudentRepository();
         List<Student> classStudents = schoolClass.getStudents();
         classStudents.remove(student);
 
@@ -63,19 +69,24 @@ public class ClassService {
         String message = "Student " + student +
                 " has been removed from class " + schoolClass;
         rwService.logger("RemoveStudentFromClass - " + new Date().toString());
+        studentRepository.updateStudentClass(null, student);
         System.out.println(message);
     }
 
     public void addSubject(Class schoolClass, Subject subject, Teacher teacher) {
+        ClassRepository classRepository = new ClassRepository();
+        TeacherRepository teacherRepository = new TeacherRepository();
         Set<Class> teacherClasses = teacher.getClasses();
         if (!teacherClasses.contains(schoolClass)) {
             teacherClasses.add(schoolClass);
             teacher.setClasses(teacherClasses);
+            teacherRepository.addTeacherClass(teacher, schoolClass);
             rwService.addClassToObjectFile(teacher, schoolClass);
         }
         HashMap<Subject, Teacher> classSubjects = schoolClass.getSubjects();
         classSubjects.put(subject,teacher);
         schoolClass.setSubjects(classSubjects);
+        classRepository.addSubject(schoolClass, subject, teacher);
 
         String message = "Teacher " + teacher + " is now teaching " +
                 subject + " in class " + schoolClass;
@@ -84,10 +95,12 @@ public class ClassService {
         System.out.println(message);
     }
     public void removeSubject(Class schoolClass, Subject subject) {
+        ClassRepository classRepository = new ClassRepository();
         HashMap<Subject, Teacher> classSubjects = schoolClass.getSubjects();
         classSubjects.remove(subject);
 
         schoolClass.setSubjects(classSubjects);
+        classRepository.removeSubject(schoolClass, subject);
 
         String message = "Subject " + subject +
                 " has been removed from class " + schoolClass;
@@ -190,6 +203,10 @@ public class ClassService {
                     editSubjectInClassInteractive(in, schoolClass, "add");
                     break;
             }
+        }
+        if (!"student subject".contains(option)) {
+            ClassRepository classRepository = new ClassRepository();
+            classRepository.updateClass(schoolClass);
         }
     }
 

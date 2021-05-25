@@ -9,7 +9,10 @@ public class SchoolRepository {
 
     public void addSchool(School school) {
         String sql = "insert into school values (null, ?)";
-        try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(sql)) {
+        try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(
+                sql,
+                Statement.RETURN_GENERATED_KEYS
+        )) {
             statement.setString(1, school.getName());
             statement.executeUpdate();
             try (ResultSet generatedKey = statement.getGeneratedKeys()) {
@@ -21,6 +24,17 @@ public class SchoolRepository {
                 }
 
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateSchool(School school) {
+        String sql = "update school set name = ? where id_schol = ?";
+        try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(sql)) {
+            statement.setString(1, school.getName());
+            statement.setInt(2, school.getIdSchool());
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
