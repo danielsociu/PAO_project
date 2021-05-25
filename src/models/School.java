@@ -6,6 +6,7 @@ import java.util.List;
 
 public class School {
     private static School school = new School();
+    private int idSchool;
     private String name;
     private List<Class> classes;
     private List<Student> students;
@@ -76,6 +77,14 @@ public class School {
 
     public void setSubjects(List<Subject> subjects) {
         this.subjects = new ArrayList<>(subjects);
+    }
+
+    public int getIdSchool() {
+        return this.idSchool;
+    }
+
+    public void setIdSchool(int idSchool) {
+        this.idSchool = idSchool;
     }
 
     public static School getSchool() {

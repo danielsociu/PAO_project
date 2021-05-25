@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Class implements FileWritable {
+    private int idClass;
     private String year;
     private String yearPeriod;
     private String letter;
@@ -80,6 +81,14 @@ public class Class implements FileWritable {
         this.subjects = new HashMap<>(subjects);
     }
 
+    public int getIdClass() {
+        return this.idClass;
+    }
+
+    public void setIdClass(int idClass) {
+        this.idClass = idClass;
+    }
+
     @Override
     public String toCSVString() {
         return (String.valueOf(hashCode()) + ',' + year + ',' + letter + ','
@@ -130,6 +139,10 @@ public class Class implements FileWritable {
         }
         public Class.Builder withProgram(Program program) {
             schoolClass.setProgram(program);
+            return this;
+        }
+        public Class.Builder withIdClass(int idClass) {
+            schoolClass.setIdClass(idClass);
             return this;
         }
         public Class.Builder withCatalogue(Catalogue catalogue) {

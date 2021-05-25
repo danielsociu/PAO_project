@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Objects;
 
 public class Absence implements FileWritable {
+    private int idAbsence;
     Student student;
     Subject subject;
     Teacher teacher;
@@ -72,6 +73,14 @@ public class Absence implements FileWritable {
         this.teacher = teacher;
     }
 
+    public int getIdAbsence() {
+        return this.idAbsence;
+    }
+
+    public void setIdAbsence(int idAbsence) {
+        this.idAbsence = idAbsence;
+    }
+
     @Override
     public String toCSVString() {
         return (String.valueOf(hashCode()) + ',' + motivated + "," +  date.getTime()
@@ -117,6 +126,10 @@ public class Absence implements FileWritable {
         }
         public Absence.Builder withMotivated(boolean motivated) {
             absence.setMotivated(motivated);
+            return this;
+        }
+        public Absence.Builder withIdAbsence(int idAbsence) {
+            absence.setIdAbsence(idAbsence);
             return this;
         }
         public Absence build() {

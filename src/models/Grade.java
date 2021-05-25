@@ -5,6 +5,7 @@ import helpers.FileWritable;
 import java.util.*;
 
 public class Grade implements FileWritable {
+    private int idGrade;
     private double score;
     private Date date;
     private String evaluationMethod;
@@ -73,6 +74,14 @@ public class Grade implements FileWritable {
         this.subject = subject;
     }
 
+    public int getIdGrade() {
+        return this.idGrade;
+    }
+
+    public void setIdGrade(int idGrade) {
+        this.idGrade = idGrade;
+    }
+
     @Override
     public String toCSVString() {
         return (String.valueOf(hashCode()) + ',' + score + "," +  date.getTime()
@@ -122,6 +131,10 @@ public class Grade implements FileWritable {
         }
         public Grade.Builder withSubject(Subject subject) {
             grade.setSubject(subject);
+            return this;
+        }
+        public Grade.Builder withIdGrade(int idGrade) {
+            grade.setIdGrade(idGrade);
             return this;
         }
         public Grade build() {

@@ -5,6 +5,7 @@ import helpers.FileWritable;
 import java.util.*;
 
 public class Teacher extends Person  implements FileWritable {
+    private int idTeacher;
     private Set<Class> classes;
 
     public Teacher(String firstName, String lastName, Date birthDate, String pid) {
@@ -14,6 +15,18 @@ public class Teacher extends Person  implements FileWritable {
 
     public Teacher(String firstName, String lastName, Date birthDate, String pid, Set<Class> classes) {
         super(firstName, lastName, birthDate, pid);
+        this.classes = new HashSet<>(classes);
+    }
+
+    public Teacher(int idTeacher, String firstName, String lastName, Date birthDate, String pid) {
+        super(firstName, lastName, birthDate, pid);
+        this.idTeacher = idTeacher;
+        this.classes = new HashSet<>();
+    }
+
+    public Teacher(int idTeacher, String firstName, String lastName, Date birthDate, String pid, Set<Class> classes) {
+        super(firstName, lastName, birthDate, pid);
+        this.idTeacher = idTeacher;
         this.classes = new HashSet<>(classes);
     }
 
@@ -27,6 +40,14 @@ public class Teacher extends Person  implements FileWritable {
 
     public void setClasses(Set<Class> classes) {
         this.classes = new HashSet<>(classes);
+    }
+
+    public int getIdTeacher() {
+        return this.idTeacher;
+    }
+
+    public void setIdTeacher(int idTeacher) {
+        this.idTeacher = idTeacher;
     }
 
     @Override

@@ -6,17 +6,33 @@ import java.util.Date;
 import java.util.Objects;
 
 public class Student extends Person implements FileWritable {
+    private int idStudent;
     Class studentClass;
 
     public Student(String firstName, String lastName, Date birthDate, String pid, Class studentClass) {
         super(firstName, lastName, birthDate, pid);
         this.studentClass = studentClass;
     }
+    public Student(int idStudent, String firstName, String lastName, Date birthDate, String pid, Class studentClass) {
+        super(firstName, lastName, birthDate, pid);
+        this.idStudent = idStudent;
+        this.studentClass = studentClass;
+    }
+
     public Class getStudentClass() {
         return studentClass;
     }
+
     public void setStudentClass(Class studentClass) {
         this.studentClass = studentClass;
+    }
+
+    public int getIdStudent() {
+        return this.idStudent;
+    }
+
+    public void setIdStudent(int idStudent) {
+        this.idStudent = idStudent;
     }
 
     @Override
