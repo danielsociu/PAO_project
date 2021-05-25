@@ -18,7 +18,8 @@ import java.util.Scanner;
 public class Application {
     public static void main(String[] args) {
         // Services
-        RWService rwService = RWService.getRwService();
+        // RWService rwService = RWService.getRwService();
+        RDatabaseService rDatabaseService = RDatabaseService.GetRDatabaseService();
         SchoolService schoolService =  SchoolService.getSchoolService();
         ClassService classService = ClassService.getClassService();
         CatalogueService catalogueService = CatalogueService.getCatalogueService();
@@ -40,6 +41,7 @@ public class Application {
         } else {
             try {
                 schoolRepository.getSchoolId(schoolId);
+                rDatabaseService.getAllData(school);
             } catch (SQLException e) {
                 e.printStackTrace();
             };

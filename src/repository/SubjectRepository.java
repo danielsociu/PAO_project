@@ -2,9 +2,13 @@ package repository;
 
 import config.DatabaseConnection;
 import models.Program;
+import models.School;
+import models.Student;
 import models.Subject;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SubjectRepository {
     public void addSubject(Subject subject) {
@@ -38,6 +42,28 @@ public class SubjectRepository {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public List<Subject> getSubjects(School school) {
+        String sql = "select s.* from subject s, class_subjects cs, class c " +
+                "where s.id_subject = cs.id_subject and c.id_class = cs.id_class and c.id_school = ?";
+        try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(sql)) {
+            statement.setInt(1, school.getIdSchool());
+            ResultSet rs = statement.executeQuery();
+            ArrayList<Subject> subjects = new ArrayList<>();
+            while (rs.next()) {
+                subjects.add(new Subject(
+                        rs.getInt("id_subject"),
+                        rs.getString("name"),
+                        rs.getString("domain")
+                ));
+                System.out.println(subjects.get(subjects.size() -1));
+            }
+            return subjects;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }
