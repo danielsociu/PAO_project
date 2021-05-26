@@ -1,9 +1,7 @@
 package repository;
 
 import config.DatabaseConnection;
-import models.Program;
 import models.School;
-import models.Student;
 import models.Subject;
 
 import java.sql.*;

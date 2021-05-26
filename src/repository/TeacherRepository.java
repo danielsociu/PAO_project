@@ -41,52 +41,6 @@ public class TeacherRepository {
         }
     }
 
-    public void addTeacherClasses(Teacher teacher) {
-        String sqlQuery = "select * from teacher_classes where pid_teacher = ?";
-        String sqlAdd = "insert into teacher_classes (pid_teacher, id_class) " +
-                "values (?, ?)";
-        try (
-            PreparedStatement statementQuery = DatabaseConnection.getConnection().prepareStatement(
-                sqlQuery,
-                ResultSet.TYPE_SCROLL_INSENSITIVE,
-                ResultSet.CONCUR_READ_ONLY
-            );
-            PreparedStatement statementAdd = DatabaseConnection.getConnection().prepareStatement(sqlAdd)
-        ) {
-            statementQuery.setString(1, teacher.getPid());
-            ResultSet existentClasses = statementQuery.executeQuery();
-            for (models.Class myClass: teacher.getClasses()) {
-                boolean ok = true;
-                while (existentClasses.next()) {
-                    if (existentClasses.getInt("id_class") == myClass.getIdClass()) {
-                        existentClasses.beforeFirst();
-                        ok = false;
-                        break;
-                    }
-                }
-                if (ok) {
-                    statementAdd.setString(1, teacher.getPid());
-                    statementAdd.setInt(2, myClass.getIdClass());
-                    statementAdd.addBatch();
-                }
-            }
-            statementAdd.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-//    public void addTeacherClass(Teacher teacher, models.Class myClass) {
-//        String sql = "insert into teacher_classes (pid_teacher, id_class) " +
-//                "values (?, ?)";
-//        try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(sql)) {
-//            statement.setString(1, teacher.getPid());
-//            statement.setInt(2, myClass.getIdClass());
-//            statement.executeUpdate();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
     public List<Teacher> getTeachers(School school) {
         String sql = "select * from teacher where id_school = ?";
         try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(sql)) {
@@ -143,4 +97,50 @@ public class TeacherRepository {
             e.printStackTrace();
         }
     }
+//    public void addTeacherClasses(Teacher teacher) {
+//        String sqlQuery = "select * from teacher_classes where pid_teacher = ?";
+//        String sqlAdd = "insert into teacher_classes (pid_teacher, id_class) " +
+//                "values (?, ?)";
+//        try (
+//            PreparedStatement statementQuery = DatabaseConnection.getConnection().prepareStatement(
+//                sqlQuery,
+//                ResultSet.TYPE_SCROLL_INSENSITIVE,
+//                ResultSet.CONCUR_READ_ONLY
+//            );
+//            PreparedStatement statementAdd = DatabaseConnection.getConnection().prepareStatement(sqlAdd)
+//        ) {
+//            statementQuery.setString(1, teacher.getPid());
+//            ResultSet existentClasses = statementQuery.executeQuery();
+//            for (models.Class myClass: teacher.getClasses()) {
+//                boolean ok = true;
+//                while (existentClasses.next()) {
+//                    if (existentClasses.getInt("id_class") == myClass.getIdClass()) {
+//                        existentClasses.beforeFirst();
+//                        ok = false;
+//                        break;
+//                    }
+//                }
+//                if (ok) {
+//                    statementAdd.setString(1, teacher.getPid());
+//                    statementAdd.setInt(2, myClass.getIdClass());
+//                    statementAdd.addBatch();
+//                }
+//            }
+//            statementAdd.executeUpdate();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+//    public void addTeacherClass(Teacher teacher, models.Class myClass) {
+//        String sql = "insert into teacher_classes (pid_teacher, id_class) " +
+//                "values (?, ?)";
+//        try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(sql)) {
+//            statement.setString(1, teacher.getPid());
+//            statement.setInt(2, myClass.getIdClass());
+//            statement.executeUpdate();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }
