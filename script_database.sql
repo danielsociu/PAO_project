@@ -5,14 +5,18 @@ name varchar(50) not null unique
 
 create table program (
 id_program INT(6) unsigned auto_increment primary key,
+id_school INT(6) unsigned not null,
 name varchar(50) not null,
-number_years int(6)
+number_years int(6),
+foreign key (id_school) references school(id_school) on delete cascade on update cascade
 );
 
 create table subject (
 id_subject INT(6) unsigned auto_increment primary key,
+id_school INT(6) unsigned not null,
 name varchar(50) not null,
-domain varchar(50)
+domain varchar(50),
+foreign key (id_school) references school(id_school) on delete cascade on update cascade
 );
 
 -- create table catalogue (
@@ -24,21 +28,21 @@ domain varchar(50)
 -- foreign key (id_absence) references absence(id_absence)
 -- );
 
-drop table catalogue;
+-- drop table catalogue;
 
 create table class (
 id_class INT(6) unsigned auto_increment primary key,
+id_school INT(6) unsigned not null,
+id_program INT(6) unsigned not null,
 year varchar(10) not null,
 year_period varchar(30) not null,
 letter varchar(10) not null,
-id_program INT(6) unsigned not null,
-id_school INT(6) unsigned not null,
-foreign key (id_program) references program(id_program),
-foreign key (id_school) references school(id_school)
+foreign key (id_school) references school(id_school) on delete cascade on update cascade,
+foreign key (id_program) references program(id_program) on delete cascade on update cascade
 );
 
-alter table class add id_school INT(6) unsigned not null;
-alter table class add constraint foreign key (id_school) references school(id_school);school
+-- alter table class add id_school INT(6) unsigned not null;
+-- alter table class add constraint foreign key (id_school) references school(id_school) on delete cascade on update cascade;
 
 -- create table class_students (
 -- id_class INT(6) unsigned not null,
@@ -49,40 +53,46 @@ alter table class add constraint foreign key (id_school) references school(id_sc
 -- );
 -- drop table class_students;
 
-create table class_subjects (
-id_class INT(6) unsigned not null,
-id_subject INT(6) unsigned not null,
-pid_teacher varchar(50) not null,
-foreign key (id_class) references class(id_class),
-foreign key (pid_teacher) references teacher(pid_teacher),
-foreign key (id_subject) references subject(id_subject),
-unique (id_class, pid_teacher, id_subject)
-);
 -- drop table class_subjects;
 
 create table student (
 pid_student varchar(50) primary key,
+id_school INT(6) unsigned not null,
 id_class INT(6) unsigned not null,
 first_name varchar(30) not null,
 last_name varchar(30) not null,
 birth_date datetime,
-foreign key (id_class) references class(id_class)
+foreign key (id_school) references school(id_school) on delete cascade on update cascade,
+foreign key (id_class) references class(id_class) on delete cascade on update cascade
 );
 
 create table teacher (
 pid_teacher varchar(50) primary key,
+id_school INT(6) unsigned not null,
 first_name varchar(30) not null,
 last_name varchar(30) not null,
-birth_date datetime
+birth_date datetime,
+foreign key (id_school) references school(id_school) on delete cascade on update cascade
 );
 
-create table teacher_classes (
-pid_teacher varchar(50) not null,
+create table class_subjects (
 id_class INT(6) unsigned not null,
-foreign key (pid_teacher) references teacher(pid_teacher),
-foreign key (id_class) references class(id_class),
-unique(pid_teacher, id_class)
+id_subject INT(6) unsigned not null,
+pid_teacher varchar(50) not null,
+foreign key (id_class) references class(id_class) on delete cascade on update cascade,
+foreign key (pid_teacher) references teacher(pid_teacher) on delete cascade on update cascade,
+foreign key (id_subject) references subject(id_subject) on delete cascade on update cascade,
+unique (id_class, pid_teacher, id_subject)
 );
+
+-- create table teacher_classes (
+-- pid_teacher varchar(50) not null,
+-- id_class INT(6) unsigned not null,
+-- foreign key (pid_teacher) references teacher(pid_teacher),
+-- foreign key (id_class) references class(id_class),
+-- unique(pid_teacher, id_class)
+-- );
+-- drop table teacher_classes;
 
 create table absence (
 id_absence INT(6) unsigned auto_increment primary key,
@@ -112,6 +122,6 @@ foreign key (pid_teacher) references teacher(pid_teacher),
 foreign key (id_subject) references subject(id_subject),
 foreign key (id_class) references class(id_class)
 );
-drop table absence;
-alter table absence add constraint foreign key (id_class) references class(id_class);
-alter table grade add constraint foreign key (id_class) references class(id_class);
+-- drop table absence;
+-- alter table absence add constraint foreign key (id_class) references class(id_class);
+-- alter table grade add constraint foreign key (id_class) references class(id_class);

@@ -4,6 +4,8 @@ import config.DatabaseConnection;
 import models.*;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AbsenceRepository {
 
@@ -54,6 +56,59 @@ public class AbsenceRepository {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+    public List<Absence> getAbsences(
+        models.Class myClass,
+        List<Student> students,
+        List<Subject> subjects,
+        List<Teacher> teachers
+    ) {
+        String sql = "select * from absence where id_class = ?";
+        try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(sql)) {
+            statement.setInt(1, myClass.getIdClass());
+            List<Absence> absences = new ArrayList<>();
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                String pidStudent = rs.getString("pid_student");
+                String pidTeacher = rs.getString("pid_teacher");
+                int idSubject = rs.getInt("id_subject");
+                Student myStudent = null;
+                Teacher myTeacher = null;
+                Subject mySubject = null;
+                for (Student student: students) {
+                    if (pidStudent.equals(student.getPid())) {
+                        myStudent = student;
+                        break;
+                    }
+                }
+                for (Teacher teacher: teachers) {
+                    if (pidTeacher.equals(teacher.getPid())) {
+                        myTeacher = teacher;
+                        break;
+                    }
+                }
+                for (Subject subject: subjects) {
+                    if (idSubject == subject.getIdSubject()) {
+                        mySubject = subject;
+                        break;
+                    }
+                }
+                absences.add(
+                        new Absence.Builder()
+                            .withIdAbsence(rs.getInt("id_absence"))
+                            .withStudent(myStudent)
+                            .withSubject(mySubject)
+                            .withTeacher(myTeacher)
+                            .withDate(rs.getDate("date"))
+                            .withMotivated(rs.getBoolean("motivated"))
+                            .build()
+                );
+            }
+            return absences;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

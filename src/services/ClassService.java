@@ -80,7 +80,6 @@ public class ClassService {
         if (!teacherClasses.contains(schoolClass)) {
             teacherClasses.add(schoolClass);
             teacher.setClasses(teacherClasses);
-            teacherRepository.addTeacherClass(teacher, schoolClass);
             rwService.addClassToObjectFile(teacher, schoolClass);
         }
         HashMap<Subject, Teacher> classSubjects = schoolClass.getSubjects();

@@ -84,7 +84,7 @@ public class SchoolService {
         String message = "Class " + deleted + " has been been deleted";
         System.out.println(message);
         rwService.logger("DeleteClass - " + new Date().toString());
-        classRepository.removeClass(deleted);
+        classRepository.removeClass(school, deleted);
         return deleted;
     }
 
@@ -97,7 +97,7 @@ public class SchoolService {
         String message = "Student " + student + " has been been added";
         rwService.addClassToFile(student);
         rwService.logger("AddStudent - " + new Date().toString());
-        studentRepository.addStudent(student);
+        studentRepository.addStudent(school, student);
         System.out.println(message);
     }
 
@@ -110,7 +110,7 @@ public class SchoolService {
         String message = "Student " + deleted + " has been been deleted";
         System.out.println(message);
         rwService.logger("DeleteStudent - " + new Date().toString());
-        studentRepository.removeStudent(deleted);
+        studentRepository.removeStudent(school, deleted);
         return deleted;
     }
 
@@ -123,7 +123,7 @@ public class SchoolService {
         String message = "Teacher " + teacher + " has been been added";
         rwService.addClassToFile(teacher);
         rwService.logger("AddTeacher - " + new Date().toString());
-        teacherRepository.addTeacher(teacher);
+        teacherRepository.addTeacher(school, teacher);
         System.out.println(message);
     }
 
@@ -136,7 +136,7 @@ public class SchoolService {
         String message = "Teacher " + deleted + " has been been deleted";
         System.out.println(message);
         rwService.logger("DeleteTeacher - " + new Date().toString());
-        teacherRepository.removeTeacher(deleted);
+        teacherRepository.removeTeacher(school, deleted);
         return deleted;
     }
 
@@ -149,7 +149,7 @@ public class SchoolService {
         String message = "Program " + program + " has been been added";
         rwService.addClassToFile(program);
         rwService.logger("AddProgram - " + new Date().toString());
-        programRepository.addProgram(program);
+        programRepository.addProgram(school, program);
         System.out.println(message);
     }
 
@@ -162,7 +162,7 @@ public class SchoolService {
         String message = "Program " + deleted + " has been been deleted";
         System.out.println(message);
         rwService.logger("DeleteProgram - " + new Date().toString());
-        programRepository.removeProgram(deleted);
+        programRepository.removeProgram(school, deleted);
         return deleted;
     }
 
@@ -175,7 +175,7 @@ public class SchoolService {
         String message = "Subject " + subject + " has been been added";
         rwService.addClassToFile(subject);
         rwService.logger("AddSubject - " + new Date().toString());
-        subjectRepository.addSubject(subject);
+        subjectRepository.addSubject(school, subject);
         System.out.println(message);
     }
 
@@ -188,7 +188,7 @@ public class SchoolService {
         String message = "Subject " + deleted + " has been been deleted";
         System.out.println(message);
         rwService.logger("DeleteSubject - " + new Date().toString());
-        subjectRepository.removeSubject(deleted);
+        subjectRepository.removeSubject(school, deleted);
         return deleted;
     }
 

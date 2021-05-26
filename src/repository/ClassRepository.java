@@ -2,7 +2,11 @@ package repository;
 
 import config.DatabaseConnection;
 import models.*;
+import models.Class;
+
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClassRepository {
     public void addClass(School school, models.Class myClass) {
@@ -32,10 +36,11 @@ public class ClassRepository {
         }
     }
 
-    public void removeClass(models.Class myClass) {
-        String sql = "delete from class where id_class = ?";
+    public void removeClass(School school, models.Class myClass) {
+        String sql = "delete from class where id_class = ? and id_school";
         try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(sql)) {
             statement.setInt(1, myClass.getIdClass());
+            statement.setInt(2, school.getIdSchool());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -78,6 +83,38 @@ public class ClassRepository {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+    public List<models.Class> getClasses(School school, List<Program> programs) {
+        String sql = "select * from class where id_school = ?";
+        try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(sql)) {
+            statement.setInt(1, school.getIdSchool());
+            ResultSet rs = statement.executeQuery();
+            ArrayList<models.Class> classes = new ArrayList<>();
+            while (rs.next()) {
+                int idProgram = rs.getInt("id_program");
+                Program myProgram = null;
+                for (Program program: programs) {
+                    if (program.getIdProgram() == idProgram) {
+                        myProgram = program;
+                        break;
+                    }
+                }
+                classes.add(new Class.Builder()
+                        .withIdClass(rs.getInt("id_class"))
+                        .withYear(rs.getString("year"))
+                        .withYearPeriod(rs.getString("year_period"))
+                        .withLetter(rs.getString("letter"))
+                        .withProgram(myProgram)
+                        .build()
+                );
+                System.out.println(classes.get(classes.size() -1));
+                System.out.println(myProgram);
+            }
+            return classes;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

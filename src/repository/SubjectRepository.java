@@ -11,15 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SubjectRepository {
-    public void addSubject(Subject subject) {
-        String sql = "insert into subject (id_subject, name, domain) " +
-                "values (null, ?, ?)";
+    public void addSubject(School school, Subject subject) {
+        String sql = "insert into subject (id_subject, id_school, name, domain) " +
+                "values (null, ?, ?, ?)";
         try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(
                 sql,
                 Statement.RETURN_GENERATED_KEYS
         )) {
-            statement.setString(1, subject.getName());
-            statement.setString(2, subject.getDomain());
+            statement.setInt(1, school.getIdSchool());
+            statement.setString(2, subject.getName());
+            statement.setString(3, subject.getDomain());
             statement.executeUpdate();
 
             try (ResultSet generatedKey = statement.getGeneratedKeys()) {
@@ -35,10 +36,11 @@ public class SubjectRepository {
         }
     }
 
-    public void removeSubject(Subject subject) {
-        String sql = "delete from subject where id_subject = ?";
+    public void removeSubject(School school, Subject subject) {
+        String sql = "delete from subject where id_subject = ? and id_school = ?";
         try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(sql)) {
             statement.setInt(1, subject.getIdSubject());
+            statement.setInt(2, school.getIdSchool());
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -46,8 +48,7 @@ public class SubjectRepository {
     }
 
     public List<Subject> getSubjects(School school) {
-        String sql = "select s.* from subject s, class_subjects cs, class c " +
-                "where s.id_subject = cs.id_subject and c.id_class = cs.id_class and c.id_school = ?";
+        String sql = "select * from subject where id_school = ?";
         try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(sql)) {
             statement.setInt(1, school.getIdSchool());
             ResultSet rs = statement.executeQuery();

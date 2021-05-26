@@ -7,6 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GradeRepository {
 
@@ -22,9 +24,9 @@ public class GradeRepository {
             statementGrade.setString(2, grade.getTeacher().getPid());
             statementGrade.setInt(3, grade.getSubject().getIdSubject());
             statementGrade.setInt(4, myClass.getIdClass());
-            statementGrade.setDouble(4, grade.getScore());
-            statementGrade.setDate(5, new java.sql.Date(grade.getDate().getTime()));
-            statementGrade.setString(6, grade.getEvaluationMethod());
+            statementGrade.setDouble(5, grade.getScore());
+            statementGrade.setDate(6, new java.sql.Date(grade.getDate().getTime()));
+            statementGrade.setString(7, grade.getEvaluationMethod());
             statementGrade.executeUpdate();
 
             try (ResultSet generatedKey = statementGrade.getGeneratedKeys()) {
@@ -58,6 +60,61 @@ public class GradeRepository {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public List<Grade> getGrades(
+            models.Class myClass,
+            List<Student> students,
+            List<Subject> subjects,
+            List<Teacher> teachers
+    ) {
+        String sql = "select * from grade where id_class = ?";
+        try (PreparedStatement statement = DatabaseConnection.getConnection().prepareStatement(sql)) {
+            statement.setInt(1, myClass.getIdClass());
+            List<Grade> grades = new ArrayList<>();
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                String pidStudent = rs.getString("pid_student");
+                String pidTeacher = rs.getString("pid_teacher");
+                int idSubject = rs.getInt("id_subject");
+                Student myStudent = null;
+                Teacher myTeacher = null;
+                Subject mySubject = null;
+                for (Student student: students) {
+                    if (pidStudent.equals(student.getPid())) {
+                        myStudent = student;
+                        break;
+                    }
+                }
+                for (Teacher teacher: teachers) {
+                    if (pidTeacher.equals(teacher.getPid())) {
+                        myTeacher = teacher;
+                        break;
+                    }
+                }
+                for (Subject subject: subjects) {
+                    if (idSubject == subject.getIdSubject()) {
+                        mySubject = subject;
+                        break;
+                    }
+                }
+                grades.add(
+                        new Grade.Builder()
+                                .withIdGrade(rs.getInt("id_grade"))
+                                .withStudent(myStudent)
+                                .withSubject(mySubject)
+                                .withTeacher(myTeacher)
+                                .withScore(rs.getDouble("score"))
+                                .withEvaluationMethod(rs.getString("evaluation_method"))
+                                .withDate(rs.getDate("date"))
+                                .build()
+                );
+            }
+            return grades;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }
